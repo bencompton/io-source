@@ -1,0 +1,43 @@
+{
+  "name": "io-source",
+  "version": "0.0.1",
+  "description": "Develop and test your apps with a common set of mock data, then switch to real data at any time",
+  "main": "dist/src/index.js",
+  "typings": "dist/src/index.d.ts",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "gulp test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bencompton/io-source.git"
+  },
+  "keywords": [
+    "redux",
+    "vuex",
+    "mobx",
+    "typescript"
+  ],
+  "author": "Ben Compton",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bencompton/io-source/issues"
+  },
+  "homepage": "https://github.com/bencompton/io-source#readme",
+  "devDependencies": {
+    "del": "2.2.2",
+    "gulp": "3.9.1",
+    "gulp-jasmine": "2.4.2",
+    "gulp-sourcemaps": "1.6.0",
+    "gulp-typescript": "^3.1.6",
+    "merge2": "1.0.2",
+    "typescript": "^2.2.2"
+  },
+  "dependencies": {
+    "@types/es6-promise": "0.0.32",
+    "localforage": "^1.5.0",
+    "whatwg-fetch": "^2.0.3"
+  }
+}
