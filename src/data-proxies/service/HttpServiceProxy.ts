@@ -8,7 +8,7 @@ export class HttpServiceProxy implements IServiceProxy {
     private globalHeaders: { [headerName: string]: string};
     private baseUrl: string;
 
-    constructor(serializer: ISerializer = JSON, baseUrl: string = '/api') {
+    constructor(serializer: ISerializer = JSON, baseUrl: string = '/api/') {
         this.serializer = serializer;
         this.globalHeaders = {};
         this.baseUrl = baseUrl;
