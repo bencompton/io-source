@@ -1,8 +1,10 @@
 ﻿import {ISerializer} from '../serializers/Serializer';
 
 export interface IKeyValueStorageProxy {
+    getKeys(): Promise<string[]>;
     getItem<T>(name: string): Promise<T>;
     setItem<T>(name: string, data: T): Promise<void>;
+    removeItem(name: string): Promise<boolean>;
 }
 
 export abstract class KeyValueStorageProxy implements IKeyValueStorageProxy {
@@ -24,6 +26,14 @@ export abstract class KeyValueStorageProxy implements IKeyValueStorageProxy {
                     return undefined;
                 }
             });
+    }
+
+    public getKeys(): Promise<string[]> {
+        return Promise.resolve(Object.keys(this.dataMap));
+    }
+
+    public removeItem(name: string): Promise<boolean> {
+        return Promise.resolve(delete this.dataMap[name]);
     }
 
     public setItem<T>(name: string, data: T): Promise<void> {
