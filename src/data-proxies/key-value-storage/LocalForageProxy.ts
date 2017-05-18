@@ -15,6 +15,10 @@ export class LocalForageProxy implements IKeyValueStorageProxy {
         });
     }
 
+    public getKeys(): Promise<string[]> {
+        return this.localForageStore.keys();
+    }
+
     public getItem<T>(key: string) {
         return this.localForageStore.getItem<T>(key)
             .then((value: T) => {
@@ -40,5 +44,12 @@ export class LocalForageProxy implements IKeyValueStorageProxy {
         }
 
         return this.localForageStore.setItem(key, processedValue);
+    }
+
+    public removeItem(key: string): Promise<boolean> {
+        return this.localForageStore.removeItem(key)
+            .then(() => {
+                return Promise.resolve(true);
+            });
     }
 }

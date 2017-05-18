@@ -3,6 +3,10 @@
 export class MockKeyValueStorageProxy implements IKeyValueStorageProxy {
     private data: {[key: string]: any} = {};
 
+    public getKeys(): Promise<string[]> {
+        return Promise.resolve(Object.keys(this.data));
+    }
+
     public getItem<T>(name: string): Promise<T> {
         return Promise.resolve<T>(this.data[name]);
     }
@@ -10,5 +14,9 @@ export class MockKeyValueStorageProxy implements IKeyValueStorageProxy {
     public setItem<T>(name: string, data: T): Promise<void> {
         this.data[name] = data;
         return Promise.resolve(null);
+    }
+
+    public removeItem(name: string): Promise<boolean> {
+        return Promise.resolve(delete this.data[name]);
     }
 }
