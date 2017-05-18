@@ -1,4 +1,5 @@
-﻿import {IServiceProxy} from './ServiceProxy';
+﻿import {IServiceProxy, IServiceResponse} from './ServiceProxy';
+import {ServiceProxyResponseEvent} from './ServiceProxyResponseEvent';
 
 export enum ServiceOperationTypeEnum {
     Create,
@@ -7,18 +8,9 @@ export enum ServiceOperationTypeEnum {
     Delete
 }
 
-export interface IMockResponseError {
-    message: string;
-}
-
-export interface IMockResponse<T> {
-    status: number;
-    responseBody: T | IMockResponseError;
-}
-
 export interface ILoggedServiceCall {
     urlMatches: RegExpMatchArray;
-    response: IMockResponse<any>;
+    response: IServiceResponse<any>;
     requestBody: any;
 }
 
@@ -26,24 +18,22 @@ export interface IMockServiceOperation<TRequest, TResponse> {
     name: string;
     operationType: ServiceOperationTypeEnum;
     urlRegex: RegExp;
-    response: (urlMatches?: string[], requestBody?: TRequest, params?: any) => IMockResponse<TResponse>;
+    response: (urlMatches?: string[], requestBody?: TRequest, params?: any) => IServiceResponse<TResponse>;
 }
 
 export class MockServiceProxy implements IServiceProxy {
     private addRandomDelays: boolean;
     private serviceOperations: IMockServiceOperation<any, any>[] = [];
     private params: any;
-    private staticDelay: { [operationName: string]: number} = {};
-    private globalHeaders: { [headerName: string]: string } = {};
+    private staticDelay: { [operationName: string]: number} = {};    
+    private serviceProxyResponseEvent: ServiceProxyResponseEvent;
+    private globalResponseHeaders: {[name: string]: string | (() => string)} = {};
 
     public loggedCalls: ILoggedServiceCall[] = [];
 
     constructor(addRandomDelays: boolean = false) {
         this.addRandomDelays = addRandomDelays;
-    }
-
-    public addGlobalHeader(headerName: string, headerValue: string) {
-        this.globalHeaders[headerName] = headerValue;
+        this.serviceProxyResponseEvent = new ServiceProxyResponseEvent();
     }
 
     public addOperation(operation: IMockServiceOperation<any, any>) {
@@ -72,6 +62,16 @@ export class MockServiceProxy implements IServiceProxy {
 
     public setParams(params: any) {
         this.params = params;
+    }
+
+    public get responseEvent() {
+        return this.serviceProxyResponseEvent;
+    }
+
+    public addGlobalResponseHeader(name: string, value: string)
+    public addGlobalResponseHeader(name: string, value: () => string)
+    public addGlobalResponseHeader(name: string, value: (() => string) | string) {
+        this.globalResponseHeaders[name] = value;
     }
 
     private fakeAjaxCall<TData, TReturn>(operationType: ServiceOperationTypeEnum, resourcePath: string, data: TData): Promise<TReturn> {
@@ -129,6 +129,10 @@ export class MockServiceProxy implements IServiceProxy {
                     requestBody
                 });
 
+                this.addGlobalResponseHeaders(response);
+                
+                this.responseEvent.fire(response);                
+
                 if (response.status >= 200 && response.status < 400) {
                     return <TReturn>response.responseBody;
                 } else {
@@ -141,5 +145,27 @@ export class MockServiceProxy implements IServiceProxy {
                     throw new Error(errorMessage);
                 }
             });
+    }
+
+    private addGlobalResponseHeaders(response: IServiceResponse<any>) {
+        const processedGlobalResponseHeaders = Object.keys(this.globalResponseHeaders)
+            .reduce((previousHeaderName, currentHeaderName) => {
+                const value = this.globalResponseHeaders[currentHeaderName];
+                let processedValue: string;
+
+                if (typeof value === 'function') {
+                    processedValue = value();
+                }
+                
+                return {
+                    ...previousHeaderName,
+                    [currentHeaderName]: processedValue
+                }                
+            }, {});            
+
+        response.headers = {
+            ...processedGlobalResponseHeaders,
+            ...response.headers            
+        };
     }
 }

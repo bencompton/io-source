@@ -1,10 +1,9 @@
 import {HttpServiceProxy} from './data-proxies/service/HttpServiceProxy';
-import {IServiceProxy} from './data-proxies/service/ServiceProxy';
+import {IServiceProxy, IServiceResponse, IServiceResponseError} from './data-proxies/service/ServiceProxy';
+import {IServiceResponseListener, ServiceProxyResponseEvent} from './data-proxies/service/ServiceProxyResponseEvent';
 import {
     MockServiceProxy,
     ILoggedServiceCall,
-    IMockResponse,
-    IMockResponseError,
     IMockServiceOperation,
     ServiceOperationTypeEnum
 } from './data-proxies/service/MockServiceProxy';
@@ -16,7 +15,8 @@ import {CircularSerializer} from './data-proxies/serializers/CircularSerializer'
 
 export {
     IServiceProxy, HttpServiceProxy, MockServiceProxy,
-    ILoggedServiceCall, IMockResponse, IMockResponseError, IMockServiceOperation, ServiceOperationTypeEnum,
+    ILoggedServiceCall, IMockServiceOperation, ServiceOperationTypeEnum, IServiceResponse, IServiceResponseError,
+    IServiceResponseListener, ServiceProxyResponseEvent,
     IKeyValueStorageProxy, LocalStorageProxy, LocalForageProxy, MockKeyValueStorageProxy,
     CircularSerializer
 }

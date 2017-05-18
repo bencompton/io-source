@@ -1,20 +1,27 @@
 ﻿import 'whatwg-fetch';
 
 import {ISerializer} from '../serializers/Serializer';
-import {IServiceProxy} from './ServiceProxy';
+import {IServiceProxy, IServiceResponse, IHttpHeaders} from './ServiceProxy';
+import {ServiceProxyResponseEvent} from './ServiceProxyResponseEvent';
 
 export class HttpServiceProxy implements IServiceProxy {
     private serializer: ISerializer;
     private globalHeaders: { [headerName: string]: string};
     private baseUrl: string;
+    private serviceProxyResponseEvent: ServiceProxyResponseEvent
 
     constructor(serializer: ISerializer = JSON, baseUrl: string = '/api/') {
         this.serializer = serializer;
         this.globalHeaders = {};
         this.baseUrl = baseUrl;
+        this.serviceProxyResponseEvent = new ServiceProxyResponseEvent();
     }
 
-    public addGlobalHeader(headerName: string, headerValue: string) {
+    public get responseEvent() {
+        return this.serviceProxyResponseEvent;
+    }
+
+    public addGlobalRequestHeader(headerName: string, headerValue: string) {
         this.globalHeaders[headerName] = headerValue;
     }
 
@@ -62,11 +69,17 @@ export class HttpServiceProxy implements IServiceProxy {
         if (response.status >= 200 && response.status < 300) {
             return response.text()
                 .then(responseJson => {
+                    let responseBody: TReturn;
+
                     if (deserializeResponse) {
-                        return this.serializer.parse<TReturn>(responseJson);
+                        responseBody = this.serializer.parse<TReturn>(responseJson);
                     } else {
-                        return <TReturn>(<any>responseJson);
+                        responseBody = <TReturn>(<any>responseJson);
                     }
+
+                    this.serviceProxyResponseEvent.fire({ status: response.status, responseBody, headers: this.extractHeaders(response.headers) });
+
+                    return responseBody;
                 });
         } else {
             return response.text()
@@ -82,8 +95,20 @@ export class HttpServiceProxy implements IServiceProxy {
                         //Eat it
                     }
 
+                    this.serviceProxyResponseEvent.fire({ status: response.status, responseBody: errorResponseText, headers: this.extractHeaders(response.headers) });
+
                     return <Promise<TReturn>>Promise.reject(new Error(errorMessage));
                 });
         }
+    }
+
+    private extractHeaders(headers: Headers) {
+        const responseHeaders: IHttpHeaders = {};
+
+        headers.forEach((name: string, value: string) => {
+            responseHeaders[name] = value;
+        });
+
+        return responseHeaders;
     }
 }
