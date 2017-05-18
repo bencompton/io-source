@@ -46,10 +46,10 @@ export class LocalForageProxy implements IKeyValueStorageProxy {
         return this.localForageStore.setItem(key, processedValue);
     }
 
-    public removeItem(key: string): Promise<boolean> {
+    public removeItem(key: string): Promise<void> {
         return this.localForageStore.removeItem(key)
             .then(() => {
-                return Promise.resolve(true);
+                return Promise.resolve(null);
             });
     }
 }

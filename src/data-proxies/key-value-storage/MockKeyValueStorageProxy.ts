@@ -16,7 +16,8 @@ export class MockKeyValueStorageProxy implements IKeyValueStorageProxy {
         return Promise.resolve(null);
     }
 
-    public removeItem(name: string): Promise<boolean> {
-        return Promise.resolve(delete this.data[name]);
+    public removeItem(name: string): Promise<void> {
+        delete this.data[name];
+        return Promise.resolve(null);
     }
 }
