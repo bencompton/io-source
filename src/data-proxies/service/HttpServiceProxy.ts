@@ -105,7 +105,7 @@ export class HttpServiceProxy implements IServiceProxy {
     private extractHeaders(headers: Headers) {
         const responseHeaders: IHttpHeaders = {};
 
-        headers.forEach((name: string, value: string) => {
+        headers.forEach((value: string, name: string) => {
             responseHeaders[name] = value;
         });
 
