@@ -79,12 +79,8 @@ export class MockServiceProxy implements IServiceProxy {
             .then(() => {
                 const matchingOperations = this.getMatchingOperations<TData, TReturn>(resourcePath);
 
-                if (matchingOperations.length > 1) {
+                if (matchingOperations.length > 1) {                    
                     throw new Error(`More than 1 matching service operation found for URL "${resourcePath}"`);
-                }
-
-                if (matchingOperations.length === 0) {
-                    throw new Error(`The URL "${resourcePath}" was not found for operation type "${ServiceOperationTypeEnum[operationType]}"!`);
                 }
 
                 return this.executeServiceOperation(resourcePath, matchingOperations[0], data);
@@ -120,8 +116,20 @@ export class MockServiceProxy implements IServiceProxy {
                 setTimeout(() => resolve(), timeout);
             })
             .then(() => {
-                const urlMatches = resourcePath.match(serviceOperation.urlRegex);
-                const response = serviceOperation.response(urlMatches, requestBody, this.params);
+                let urlMatches: RegExpMatchArray;
+                let response: IServiceResponse<TReturn>;
+
+                if (resourcePath) {
+                    urlMatches = resourcePath.match(serviceOperation.urlRegex);
+                    response = serviceOperation.response(urlMatches, requestBody, this.params);                    
+                } else {
+                    response = {
+                        status: 404,
+                        responseBody: <any>`The URL "${resourcePath}" was not found for the specified operation type!`
+                    };
+
+                    urlMatches = [];
+                }
 
                 this.loggedCalls.push({
                     urlMatches,
@@ -139,7 +147,7 @@ export class MockServiceProxy implements IServiceProxy {
                     let errorMessage = `The URL "${resourcePath}" returned an error!`;
 
                     if (response.responseBody) {
-                        errorMessage += ` The following info was provided in the response body: "${JSON.stringify(response.responseBody)}"`;
+                        errorMessage += `The following info was provided in the response body: "${JSON.stringify(response.responseBody)}"`;
                     }
 
                     throw new Error(errorMessage);
@@ -155,6 +163,8 @@ export class MockServiceProxy implements IServiceProxy {
 
                 if (typeof value === 'function') {
                     processedValue = value();
+                } else {
+                    processedValue = value;
                 }
                 
                 return {
