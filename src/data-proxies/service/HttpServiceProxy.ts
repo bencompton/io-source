@@ -71,7 +71,7 @@ export class HttpServiceProxy implements IServiceProxy {
                 .then(responseJson => {
                     let responseBody: TReturn;
 
-                    if (deserializeResponse) {
+                    if (deserializeResponse && !!responseJson) {
                         responseBody = this.serializer.parse<TReturn>(responseJson);
                     } else {
                         responseBody = <TReturn>(<any>responseJson);
