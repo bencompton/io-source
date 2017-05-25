@@ -1,22 +1,15 @@
-import {HttpServiceProxy} from './data-proxies/service/HttpServiceProxy';
-import {IServiceProxy, IServiceResponse, IServiceResponseError} from './data-proxies/service/ServiceProxy';
-import {IServiceResponseListener, ServiceProxyResponseEvent} from './data-proxies/service/ServiceProxyResponseEvent';
-import {
+export {HttpServiceProxy} from './service/HttpServiceProxy';
+export {IServiceProxy, IServiceResponse, IServiceResponseError} from './service/ServiceProxy';
+export {IServiceResponseListener, ServiceProxyResponseEvent} from './service/ServiceProxyResponseEvent';
+export {
     MockServiceProxy,
     ILoggedServiceCall,
     IMockServiceOperation,
     ServiceOperationTypeEnum
-} from './data-proxies/service/MockServiceProxy';
-import {IKeyValueStorageProxy} from '././data-proxies/key-value-storage/KeyValueStorageProxy';
-import {LocalForageProxy} from './data-proxies/key-value-storage/LocalForageProxy';
-import {LocalStorageProxy} from './data-proxies/key-value-storage/LocalStorageProxy';
-import {MockKeyValueStorageProxy} from './data-proxies/key-value-storage/MockKeyValueStorageProxy';
-import {CircularSerializer} from './data-proxies/serializers/CircularSerializer';
-
-export {
-    IServiceProxy, HttpServiceProxy, MockServiceProxy,
-    ILoggedServiceCall, IMockServiceOperation, ServiceOperationTypeEnum, IServiceResponse, IServiceResponseError,
-    IServiceResponseListener, ServiceProxyResponseEvent,
-    IKeyValueStorageProxy, LocalStorageProxy, LocalForageProxy, MockKeyValueStorageProxy,
-    CircularSerializer
-}
+} from './service/MockServiceProxy';
+export {IKeyValueStorageProxy} from './key-value-storage/KeyValueStorageProxy';
+export {LocalForageProxy} from './/key-value-storage/LocalForageProxy';
+export {LocalStorageProxy} from './key-value-storage/LocalStorageProxy';
+export {MockKeyValueStorageProxy} from './key-value-storage/MockKeyValueStorageProxy';
+export {CircularSerializer} from './serializers/CircularSerializer';
+export {ConnectionStatusEnum, IConnectivityMonitor, ConnectivityMonitor, MockConnectivityMonitor} from './service/ConnectivityMonitor';
