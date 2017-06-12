@@ -66,7 +66,7 @@ export class HttpServiceProxy implements IServiceProxy {
     }
 
     private handleResponse<TReturn>(response: Response, deserializeResponse: boolean): Promise<TReturn> {
-        if (response.status >= 200 && response.status < 300) {
+        if (response.status >= 200 && response.status < 400) {
             return response.text()
                 .then(responseJson => {
                     let responseBody: TReturn;
