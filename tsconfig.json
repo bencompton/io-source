@@ -9,7 +9,8 @@
         "experimentalDecorators": true,
         "outDir": "dist",
         "noImplicitAny": false,
-        "rootDir": "."
+        "rootDir": ".",
+        "lib": ["es2015", "dom"]
     },
     "exclude": [
         "node_modules",

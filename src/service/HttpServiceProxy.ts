@@ -3,6 +3,7 @@
 import {ISerializer} from '../serializers/Serializer';
 import {IServiceProxy, IServiceResponse, IHttpHeaders} from './ServiceProxy';
 import {ServiceProxyResponseEvent} from './ServiceProxyResponseEvent';
+import {ServiceProxyError} from './ServiceProxyError';
 
 export class HttpServiceProxy implements IServiceProxy {
     private serializer: ISerializer;
@@ -61,11 +62,11 @@ export class HttpServiceProxy implements IServiceProxy {
 
         return fetch(url, config)
             .then(response => {
-                return <Promise<TReturn>>this.handleResponse(response, deserializeResponse);
+                return <Promise<TReturn>>this.handleResponse(url, response, deserializeResponse);
             });
     }
 
-    private handleResponse<TReturn>(response: Response, deserializeResponse: boolean): Promise<TReturn> {
+    private handleResponse<TReturn>(url: string, response: Response, deserializeResponse: boolean): Promise<TReturn> {
         if (response.status >= 200 && response.status < 400) {
             return response.text()
                 .then(responseJson => {
@@ -84,20 +85,11 @@ export class HttpServiceProxy implements IServiceProxy {
         } else {
             return response.text()
                 .then(errorResponseText => {
-                    let errorMessage = 'An unexpected error occurred';
-
-                    try {
-                        const errorObject = JSON.parse(errorResponseText);
-                        if (errorObject.message) {
-                            errorMessage = errorObject.message;
-                        }
-                    } catch (err) {
-                        //Eat it
-                    }
+                    const error = new ServiceProxyError(url, response.status, errorResponseText);
 
                     this.serviceProxyResponseEvent.fire({ status: response.status, responseBody: errorResponseText, headers: this.extractHeaders(response.headers) });
 
-                    return <Promise<TReturn>>Promise.reject(new Error(errorMessage));
+                    return <Promise<TReturn>>Promise.reject(error);
                 });
         }
     }

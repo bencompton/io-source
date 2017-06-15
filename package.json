@@ -36,7 +36,6 @@
     "typescript": "^2.2.2"
   },
   "dependencies": {
-    "@types/es6-promise": "0.0.32",
     "localforage": "^1.5.0",
     "whatwg-fetch": "^2.0.3"
   }

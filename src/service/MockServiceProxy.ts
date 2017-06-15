@@ -1,5 +1,6 @@
 ﻿import {IServiceProxy, IServiceResponse} from './ServiceProxy';
 import {ServiceProxyResponseEvent} from './ServiceProxyResponseEvent';
+import {ServiceProxyError} from './ServiceProxyError';
 
 export enum ServiceOperationTypeEnum {
     Create,
@@ -144,13 +145,7 @@ export class MockServiceProxy implements IServiceProxy {
                 if (response.status >= 200 && response.status < 400) {
                     return <TReturn>response.responseBody;
                 } else {
-                    let errorMessage = `The URL "${resourcePath}" returned an error!`;
-
-                    if (response.responseBody) {
-                        errorMessage += `The following info was provided in the response body: "${JSON.stringify(response.responseBody)}"`;
-                    }
-
-                    throw new Error(errorMessage);
+                    throw new ServiceProxyError(resourcePath, response.status, <any>response.responseBody);
                 }
             });
     }
