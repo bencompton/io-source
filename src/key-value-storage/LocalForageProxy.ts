@@ -11,7 +11,7 @@ export class LocalForageProxy implements IKeyValueStorageProxy {
         this.serializer = serializer;
 
         this.localForageStore = localForage.createInstance({
-            driver: <any[]>[localForage.WEBSQL, localForage.INDEXEDDB, localForage.LOCALSTORAGE]
+            driver: <any[]>[localForage.INDEXEDDB, localForage.WEBSQL, localForage.LOCALSTORAGE]
         });
     }
 
@@ -26,7 +26,7 @@ export class LocalForageProxy implements IKeyValueStorageProxy {
                     return value;
                 } else {
                     if (value) {
-                        return this.serializer.parse(<any>value);
+                        return this.serializer.parse(<any>value) as T;
                     } else {
                         return null;
                     }
