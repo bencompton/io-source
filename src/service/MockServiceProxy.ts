@@ -1,6 +1,7 @@
 ﻿import {IServiceProxy, IServiceResponse} from './ServiceProxy';
 import {ServiceProxyResponseEvent} from './ServiceProxyResponseEvent';
 import {ServiceProxyError} from './ServiceProxyError';
+import {MockConnectivityMonitor, ConnectionStatusEnum} from './ConnectivityMonitor';
 
 export enum ServiceOperationTypeEnum {
     Create,
@@ -29,12 +30,17 @@ export class MockServiceProxy implements IServiceProxy {
     private staticDelay: { [operationName: string]: number} = {};    
     private serviceProxyResponseEvent: ServiceProxyResponseEvent;
     private globalResponseHeaders: {[name: string]: string | (() => string)} = {};
+    private connectivityMonitor: MockConnectivityMonitor;
 
     public loggedCalls: ILoggedServiceCall[] = [];
 
     constructor(addRandomDelays: boolean = false) {
         this.addRandomDelays = addRandomDelays;
         this.serviceProxyResponseEvent = new ServiceProxyResponseEvent();
+    }
+
+    public listenToConnectivityMonitor(connectivityMonitor: MockConnectivityMonitor) {
+        this.connectivityMonitor = connectivityMonitor;
     }
 
     public addOperation(operation: IMockServiceOperation<any, any>) {
@@ -78,6 +84,17 @@ export class MockServiceProxy implements IServiceProxy {
     private fakeAjaxCall<TData, TReturn>(operationType: ServiceOperationTypeEnum, resourcePath: string, data: TData): Promise<TReturn> {
         return Promise.resolve()
             .then(() => {
+                if (this.connectivityMonitor) {
+                    return this.connectivityMonitor.getConnectionStatus();
+                } else {
+                    return Promise.resolve(null);
+                }
+            })
+            .then(connectivityStatus => {
+                if (connectivityStatus && connectivityStatus === ConnectionStatusEnum.Disconnected) {
+                    throw new Error('Could not call service operation because there is no connectivity');
+                }
+
                 const matchingOperations = this.getMatchingOperations<TData, TReturn>(resourcePath);
 
                 if (matchingOperations.length > 1) {                    
