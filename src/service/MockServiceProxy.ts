@@ -37,6 +37,7 @@ export class MockServiceProxy implements IServiceProxy {
     constructor(addRandomDelays: boolean = false) {
         this.addRandomDelays = addRandomDelays;
         this.serviceProxyResponseEvent = new ServiceProxyResponseEvent();
+        this.params = {};
     }
 
     public listenToConnectivityMonitor(connectivityMonitor: MockConnectivityMonitor) {
@@ -69,6 +70,10 @@ export class MockServiceProxy implements IServiceProxy {
 
     public setParams(params: any) {
         this.params = params;
+    }
+
+    public setParam(paramName: string, paramValue: any) {
+        this.params[paramName] = paramValue;
     }
 
     public get responseEvent() {
