@@ -3,12 +3,11 @@ import {ServiceProxyResponseEvent} from './ServiceProxyResponseEvent';
 import {ServiceProxyError} from './ServiceProxyError';
 import {MockConnectivityMonitor, ConnectionStatusEnum} from './ConnectivityMonitor';
 
-export enum ServiceOperationTypeEnum {
-    Create,
-    Read,
-    Update,
-    Delete
-}
+export type ServiceOperationTypeEnum =
+    "create"
+    | "read"
+    | "update"
+    | "delete";
 
 export interface ILoggedServiceCall {
     urlMatches: RegExpMatchArray;
@@ -49,19 +48,19 @@ export class MockServiceProxy implements IServiceProxy {
     }
 
     public createViaService<TData, TReturn>(resourcePath: string, data: TData): Promise<TReturn> {
-        return this.fakeAjaxCall<TData, TReturn>(ServiceOperationTypeEnum.Create, resourcePath, data);
+        return this.fakeAjaxCall<TData, TReturn>("create", resourcePath, data);
     }
 
     public readViaService<T>(resourcePath: string): Promise<T> {
-        return this.fakeAjaxCall<void, T>(ServiceOperationTypeEnum.Read, resourcePath, null);
+        return this.fakeAjaxCall<void, T>("read", resourcePath, null);
     }
 
     public updateViaService<TData, TReturn>(resourcePath: string, data: TData): Promise<TReturn> {
-        return this.fakeAjaxCall<TData, TReturn>(ServiceOperationTypeEnum.Update, resourcePath, data);
+        return this.fakeAjaxCall<TData, TReturn>("update", resourcePath, data);
     }
 
     public deleteViaService<TData, TReturn>(resourcePath: string, data: TData): Promise<TReturn> {
-        return this.fakeAjaxCall<TData, TReturn>(ServiceOperationTypeEnum.Delete, resourcePath, data);
+        return this.fakeAjaxCall<TData, TReturn>("delete", resourcePath, data);
     }
 
     public addStaticDelay(serviceOperationName: string, delay: number) {
@@ -96,7 +95,7 @@ export class MockServiceProxy implements IServiceProxy {
                 }
             })
             .then(connectivityStatus => {
-                if (connectivityStatus && connectivityStatus === ConnectionStatusEnum.Disconnected) {
+                if (connectivityStatus && connectivityStatus === "Disconnected") {
                     throw new Error('Could not call service operation because there is no connectivity');
                 }
 
