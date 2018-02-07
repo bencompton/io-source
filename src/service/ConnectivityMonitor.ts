@@ -1,6 +1,6 @@
 import {IServiceProxy} from './ServiceProxy';
 
-export type ConnectionStatusEnum = "connected" | "disconnected";
+export type ConnectionStatusEnum = 'connected' | 'disconnected';
 
 export interface IConnectivityMonitor {
     getConnectionStatus: () => Promise<ConnectionStatusEnum>;
@@ -17,7 +17,7 @@ export class ConnectivityMonitor implements IConnectivityMonitor {
     constructor(serviceProxy: IServiceProxy, confirmConnectivityUrl: string) {
         this.serviceProxy = serviceProxy;
         this.confirmConnectivityUrl = confirmConnectivityUrl;
-        this.connectionStatus = navigator.onLine ? "connected" : "disconnected";
+        this.connectionStatus = navigator.onLine ? 'connected' : 'disconnected';
         this.confirmConnectivityPromise = Promise.resolve(null);
         this.startMonitoring();
     }
@@ -51,11 +51,11 @@ export class ConnectivityMonitor implements IConnectivityMonitor {
         this.confirmConnectivityPromise = this.serviceProxy
             .readViaService(this.confirmConnectivityUrl, null)
             .then(() => {
-                this.connectionStatus = "connected";
+                this.connectionStatus = 'connected';
                 this.listener(this.connectionStatus);
             })
             .catch(() => {
-                this.connectionStatus = "disconnected";
+                this.connectionStatus = 'disconnected';
                 this.listener(this.connectionStatus);
             });
 
@@ -70,7 +70,7 @@ export class MockConnectivityMonitor implements IConnectivityMonitor {
 
     constructor(serviceProxy: IServiceProxy) {
         this.serviceProxy = serviceProxy;
-        this.connectionStatus = "connected";
+        this.connectionStatus = 'connected';
     }
 
     public getConnectionStatus() {

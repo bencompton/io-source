@@ -4,10 +4,10 @@ import {ServiceProxyError} from './ServiceProxyError';
 import {MockConnectivityMonitor, ConnectionStatusEnum} from './ConnectivityMonitor';
 
 export type ServiceOperationTypeEnum =
-    "create"
-    | "read"
-    | "update"
-    | "delete";
+    'create'
+    | 'read'
+    | 'update'
+    | 'delete';
 
 export interface ILoggedServiceCall {
     urlMatches: RegExpMatchArray;
@@ -48,19 +48,19 @@ export class MockServiceProxy implements IServiceProxy {
     }
 
     public createViaService<TData, TReturn>(resourcePath: string, data: TData): Promise<TReturn> {
-        return this.fakeAjaxCall<TData, TReturn>("create", resourcePath, data);
+        return this.fakeAjaxCall<TData, TReturn>('create', resourcePath, data);
     }
 
     public readViaService<T>(resourcePath: string): Promise<T> {
-        return this.fakeAjaxCall<void, T>("read", resourcePath, null);
+        return this.fakeAjaxCall<void, T>('read', resourcePath, null);
     }
 
     public updateViaService<TData, TReturn>(resourcePath: string, data: TData): Promise<TReturn> {
-        return this.fakeAjaxCall<TData, TReturn>("update", resourcePath, data);
+        return this.fakeAjaxCall<TData, TReturn>('update', resourcePath, data);
     }
 
     public deleteViaService<TData, TReturn>(resourcePath: string, data: TData): Promise<TReturn> {
-        return this.fakeAjaxCall<TData, TReturn>("delete", resourcePath, data);
+        return this.fakeAjaxCall<TData, TReturn>('delete', resourcePath, data);
     }
 
     public addStaticDelay(serviceOperationName: string, delay: number) {
@@ -79,8 +79,8 @@ export class MockServiceProxy implements IServiceProxy {
         return this.serviceProxyResponseEvent;
     }
 
-    public addGlobalResponseHeader(name: string, value: string)
-    public addGlobalResponseHeader(name: string, value: () => string)
+    public addGlobalResponseHeader(name: string, value: string): void;
+    public addGlobalResponseHeader(name: string, value: () => string): void;
     public addGlobalResponseHeader(name: string, value: (() => string) | string) {
         this.globalResponseHeaders[name] = value;
     }
@@ -91,18 +91,18 @@ export class MockServiceProxy implements IServiceProxy {
                 if (this.connectivityMonitor) {
                     return this.connectivityMonitor.getConnectionStatus();
                 } else {
-                    return Promise.resolve(null);
+                    return Promise.resolve(null as ConnectionStatusEnum);
                 }
             })
             .then(connectivityStatus => {
-                if (connectivityStatus && connectivityStatus === "Disconnected") {
+                if (connectivityStatus && connectivityStatus === 'disconnected') {
                     throw new Error('Could not call service operation because there is no connectivity');
                 }
 
                 const matchingOperations = this.getMatchingOperations<TData, TReturn>(resourcePath);
 
                 if (matchingOperations.length > 1) {                    
-                    throw new Error(`More than 1 matching service operation found for URL "${resourcePath}"`);
+                    throw new Error(`More than 1 matching service operation found for URL '${resourcePath}'`);
                 }
 
                 return this.executeServiceOperation(resourcePath, matchingOperations[0], data);
@@ -147,7 +147,7 @@ export class MockServiceProxy implements IServiceProxy {
                 } else {
                     response = {
                         status: 404,
-                        responseBody: <any>`The URL "${resourcePath}" was not found for the specified operation type!`
+                        responseBody: <any>`The URL '${resourcePath}' was not found for the specified operation type!`
                     };
 
                     urlMatches = [];

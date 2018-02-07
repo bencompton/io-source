@@ -28,20 +28,20 @@ module JsonNetDecycle {
         // it adds it to the catalog under that key.
 
         var i: number;
-        if (obj && typeof obj === "object") {
+        if (obj && typeof obj === 'object') {
             var id: string = obj.$id;
-            if (typeof id === "string") {
+            if (typeof id === 'string') {
                 catalog[id] = obj;
             }
 
-            if (Object.prototype.toString.apply(obj) === "[object Array]") {
+            if (Object.prototype.toString.apply(obj) === '[object Array]') {
                 for (i = 0; i < obj.length; i += 1) {
                     findReferences(obj[i], catalog);
                 }
             } else {
                 for (let name in obj) {
                     if (obj.hasOwnProperty(name)) {
-                        if (typeof obj[name] === "object") {
+                        if (typeof obj[name] === 'object') {
                             findReferences(obj[name], catalog);
                         }
                     }
@@ -53,26 +53,26 @@ module JsonNetDecycle {
     function resolveReferences(obj: any, catalog: any): any {
         var i: number, item: any, name: string, id: string;
 
-        if (obj && typeof obj === "object") {
-            if (Object.prototype.toString.apply(obj) === "[object Array]") {
+        if (obj && typeof obj === 'object') {
+            if (Object.prototype.toString.apply(obj) === '[object Array]') {
                 for (i = 0; i < obj.length; i += 1) {
                     item = obj[i];
-                    if (item && typeof item === "object") {
+                    if (item && typeof item === 'object') {
                         id = item.$ref;
-                        if (typeof id === "string") {
+                        if (typeof id === 'string') {
                             obj[i] = catalog[id];
                         } else {
                             obj[i] = resolveReferences(item, catalog);
                         }
                     }
                 }
-            } else if (obj.$values && Object.prototype.toString.apply(obj.$values) === "[object Array]") {
+            } else if (obj.$values && Object.prototype.toString.apply(obj.$values) === '[object Array]') {
                 var arr = new Array();
                 for (i = 0; i < obj.$values.length; i += 1) {
                     item = obj.$values[i];
-                    if (item && typeof item === "object") {
+                    if (item && typeof item === 'object') {
                         id = item.$ref;
-                        if (typeof id === "string") {
+                        if (typeof id === 'string') {
                             arr[i] = catalog[id];
                         } else {
                             arr[i] = resolveReferences(item, catalog);
@@ -85,11 +85,11 @@ module JsonNetDecycle {
             } else {
                 for (name in obj) {
                     if (obj.hasOwnProperty(name)) {
-                        if (typeof obj[name] === "object") {
+                        if (typeof obj[name] === 'object') {
                             item = obj[name];
                             if (item) {
                                 id = item.$ref;
-                                if (typeof id === "string") {
+                                if (typeof id === 'string') {
                                     obj[name] = catalog[id];
                                 } else {
                                     obj[name] = resolveReferences(item, catalog);
@@ -111,7 +111,7 @@ module JsonNetDecycle {
         var nu: any; // The new object or array
 
         switch (typeof obj) {
-            case "object":
+            case 'object':
 
                 // typeof null === 'object', so get out if this value is not really an object.
                 // Also get out if it is a weird builtin object.
@@ -140,7 +140,7 @@ module JsonNetDecycle {
                 catalog.push(obj);
 
                 // If it is an array, replicate the array.
-                if (Object.prototype.toString.apply(obj) === "[object Array]") {
+                if (Object.prototype.toString.apply(obj) === '[object Array]') {
                     nu = [];
                     for (i = 0; i < obj.length; i += 1) {
                         nu[i] = getDecycledCopy(obj[i], catalog);
@@ -156,9 +156,9 @@ module JsonNetDecycle {
                     }
                 }
                 return nu;
-            case "number":
-            case "string":
-            case "boolean":
+            case 'number':
+            case 'string':
+            case 'boolean':
             default:
                 return obj;
         }
