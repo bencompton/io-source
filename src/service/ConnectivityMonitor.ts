@@ -18,7 +18,7 @@ export class ConnectivityMonitor implements IConnectivityMonitor {
         this.serviceProxy = serviceProxy;
         this.confirmConnectivityUrl = confirmConnectivityUrl;
         this.connectionStatus = navigator.onLine ? 'connected' : 'disconnected';
-        this.confirmConnectivityPromise = Promise.resolve(null);
+        this.confirmConnectivityPromise = Promise.resolve();
         this.startMonitoring();
     }
 

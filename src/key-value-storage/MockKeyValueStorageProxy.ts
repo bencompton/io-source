@@ -13,11 +13,19 @@ export class MockKeyValueStorageProxy implements IKeyValueStorageProxy {
 
     public setItem<T>(name: string, data: T): Promise<void> {
         this.data[name] = data;
-        return Promise.resolve(null);
+        return Promise.resolve();
+    }
+
+    public getString(name: string) {
+        return this.getItem<string>(name);
+    }
+
+    public setString(name: string, value: string) {
+        return this.setItem(name, value);
     }
 
     public removeItem(name: string): Promise<void> {
         delete this.data[name];
-        return Promise.resolve(null);
+        return Promise.resolve();
     }
 }

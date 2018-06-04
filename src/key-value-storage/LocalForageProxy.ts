@@ -28,7 +28,7 @@ export class LocalForageProxy implements IKeyValueStorageProxy {
                     if (value) {
                         return this.serializer.parse(<any>value) as T;
                     } else {
-                        return null;
+                        throw new Error(`Key ${key} not found`);
                     }
                 }
             });
@@ -46,10 +46,18 @@ export class LocalForageProxy implements IKeyValueStorageProxy {
         return this.localForageStore.setItem(key, processedValue);
     }
 
-    public removeItem(key: string): Promise<void> {
+    public getString(key: string) {
+        return this.getItem<string>(key);
+    }
+
+    public setString(key: string, value: string) {
+        return this.setItem(key, value);
+    }
+
+    public removeItem(key: string) {
         return this.localForageStore.removeItem(key)
             .then(() => {
-                return Promise.resolve(null);
+                return Promise.resolve();
             });
     }
 }

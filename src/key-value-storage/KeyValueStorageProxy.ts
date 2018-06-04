@@ -4,7 +4,9 @@ export interface IKeyValueStorageProxy {
     getKeys(): Promise<string[]>;
     getItem<T>(name: string): Promise<T>;
     setItem<T>(name: string, data: T): Promise<void>;
-    removeItem(name: string): Promise<void>;
+    getString(name: string): Promise<string>;
+    setString(name: string, value: string): Promise<void>;
+    removeItem(name: string): Promise<void>;    
 }
 
 export abstract class KeyValueStorageProxy implements IKeyValueStorageProxy {
@@ -18,27 +20,27 @@ export abstract class KeyValueStorageProxy implements IKeyValueStorageProxy {
 
     public getItem<T>(name: string): Promise<T> {
         return this
-            .getItemString(name)
+            .getString(name)
             .then(itemString => {
                 if (itemString) {
                     return this.serializer.parse<T>(itemString);
                 } else {
-                    return undefined;
+                    throw new Error(`Value "${name}" does not exist`);
                 }
             });
     }
 
-    public getKeys(): Promise<string[]> {
+    public getKeys() {
         return Promise.resolve(Object.keys(this.dataMap));
     }
 
-    public removeItem(name: string): Promise<void> {
+    public removeItem(name: string) {
         delete this.dataMap[name];
         
-        return Promise.resolve(null);
+        return Promise.resolve();
     }
 
-    public setItem<T>(name: string, data: T): Promise<void> {
+    public setItem<T>(name: string, data: T) {
         let stringifiedData: string;
 
         if (typeof data === 'string') {
@@ -47,15 +49,15 @@ export abstract class KeyValueStorageProxy implements IKeyValueStorageProxy {
             stringifiedData = this.serializer.stringify<T>(data);
         }
 
-        return this.setItemString(name, <string>stringifiedData);
+        return this.setString(name, <string>stringifiedData);
     }
 
-    public getItemString(name: string): Promise<string> {
+    public getString(name: string): Promise<string> {
         return Promise.resolve(this.dataMap[name]);
     }
 
-    public setItemString(name: string, data: string): Promise<void> {
+    public setString(name: string, data: string) {
         this.dataMap[name] = data;
-        return Promise.resolve(null);
+        return Promise.resolve();
     }
 }
