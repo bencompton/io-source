@@ -28,7 +28,7 @@ export class LocalForageProxy implements IKeyValueStorageProxy {
                     if (value) {
                         return this.serializer.parse(<any>value) as T;
                     } else {
-                        throw new Error(`Key ${key} not found`);
+                        return undefined;
                     }
                 }
             });
