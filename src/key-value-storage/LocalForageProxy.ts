@@ -1,7 +1,7 @@
 import * as localForage from 'localforage';
 
 import {IKeyValueStorageProxy} from './KeyValueStorageProxy';
-import {ISerializer} from '../serializers/serializer';
+import {ISerializer} from '../serializers/Serializer';
 
 export class LocalForageProxy implements IKeyValueStorageProxy {
     private localForageStore: LocalForage;
