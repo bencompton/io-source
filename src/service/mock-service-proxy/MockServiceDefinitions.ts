@@ -34,7 +34,7 @@ export class MockServiceDefinitions {
         responseFunction?: IServiceResponseFunction<TResponse>
     ) {
         this.mockServiceOperations.add({
-            operationType: 'create',
+            operationType: 'read',
             urlRegex: this.convertUrlToRegex(url),
             response: this.getResponseFunction(url, responseFunction)
         });
@@ -45,7 +45,7 @@ export class MockServiceDefinitions {
         responseFunction?: IServiceResponseFunction<TResponse>
     ) {
         this.mockServiceOperations.add({
-            operationType: 'create',
+            operationType: 'update',
             urlRegex: this.convertUrlToRegex(url),
             response: this.getResponseFunction(url, responseFunction)
         });
@@ -56,7 +56,7 @@ export class MockServiceDefinitions {
         responseFunction?: IServiceResponseFunction<TResponse>
     ) {
         this.mockServiceOperations.add({
-            operationType: 'create',
+            operationType: 'delete',
             urlRegex: this.convertUrlToRegex(url),
             response: this.getResponseFunction(url, responseFunction)
         });
@@ -101,11 +101,11 @@ export class MockServiceDefinitions {
         if (url instanceof RegExp) {
             return urlMatches;
         } else {
-            const matches = url.match(/\{({a-zA-Z0-9_})\}/g);
+            const matches = url.match(/\{([a-zA-Z0-9_-]+)\}/g);
             const urlParams: any = {};
 
-            matches.forEach((value, index) => {
-                urlParams[value] = urlMatches[index];
+            matches && matches.forEach((value, index) => {
+                urlParams[value.replace('{', '').replace('}', '')] = urlMatches[index + 1];
             });
 
             return urlParams;
@@ -116,9 +116,7 @@ export class MockServiceDefinitions {
         if (url instanceof RegExp) {
             return url;
         } else {
-            return new RegExp(url.replace(/\//g, '\/').replace(/\{.*\}/g, '(.*)'));
+            return new RegExp(`^${url.replace(/\//g, '\/').replace(/\{.*\}/g, '([A-Za-z0-9-_]*)')}$`);
         }
     }
 }
-
-// serviceProxy.addReadOperation('/products/?searchText={searchText:s}', (searchText: string) => products)

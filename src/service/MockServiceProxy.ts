@@ -23,6 +23,7 @@ export class MockServiceProxy implements IServiceProxy {
         this.operations = new MockServiceOperations();
         this.serviceProxyResponseEvent = new ServiceProxyResponseEvent();
         this.parameters = new MockServiceParameters();
+        this.globalResponseHeaders = new GlobalResponseHeaders();
         this.execution = new MockServiceExecution(
             this.options,
             this.operations,
@@ -56,31 +57,35 @@ export class MockServiceProxy implements IServiceProxy {
 
     public addCreateOperation<TRequest, TResponse>(
         url: string | RegExp,
-        responseFunction?: IServiceResponseFunction<TRequest, TResponse>
+        responseFunction?: IServiceResponseFunction<TResponse>
     ) {
         this.serviceDefinitions.addCreateOperation(url, responseFunction);
     }
 
     public addReadOperation<TResponse>(
         url: string | RegExp,
-        responseFunction?: IServiceResponseFunction<void, TResponse>
+        responseFunction?: IServiceResponseFunction<TResponse>
     ) {
         this.serviceDefinitions.addReadOperation(url, responseFunction);
     }
 
     public addUpdateOperation<TRequest, TResponse>(
         url: string | RegExp,
-        responseFunction?: IServiceResponseFunction<TRequest, TResponse>
+        responseFunction?: IServiceResponseFunction<TResponse>
     ) {
         this.serviceDefinitions.addUpdateOperation(url, responseFunction);
     }
 
     public addDeleteOperation<TRequest, TResponse>(
         url: string | RegExp,
-        responseFunction?: IServiceResponseFunction<TRequest, TResponse>
+        responseFunction?: IServiceResponseFunction<TResponse>
     ) {
         this.serviceDefinitions.addDeleteOperation(url, responseFunction);
-    }    
+    }
+    
+    public addGlobalResponseHeader(name: string, value: string) {
+        this.globalResponseHeaders.addGlobalResponseHeader(name, value);
+    }
 
     public get responseEvent() {
         return this.serviceProxyResponseEvent;

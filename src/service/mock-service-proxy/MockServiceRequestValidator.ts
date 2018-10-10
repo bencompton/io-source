@@ -30,13 +30,13 @@ export class MockServiceRequestValidator {
                 }
 
                 if (matchingOperations.length > 1) {  
-                    const error = `More than 1 matching service operation found for URL '${resourcePath}'`;
+                    const error = `More than 1 ${operationType} service operation found for URL '${resourcePath}'`;
                     console.warn(error);
                     throw new ServiceProxyError(resourcePath, 400, error);
                 }
 
                 if (matchingOperations.length === 0) {
-                    const error = `The URL '${resourcePath}' was not found for the operation type ${operationType}!`;
+                    const error = `A ${operationType} service operation was not found for URL '${resourcePath}'!`;
                     console.warn(error);
                     throw new ServiceProxyError(resourcePath, 400, error);                    
                 }
