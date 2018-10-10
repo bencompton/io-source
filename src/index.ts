@@ -1,12 +1,9 @@
 export {HttpServiceProxy} from './service/HttpServiceProxy';
 export {IServiceProxy, IServiceResponse, IServiceResponseError} from './service/ServiceProxy';
 export {IServiceResponseListener, ServiceProxyResponseEvent} from './service/ServiceProxyResponseEvent';
-export {
-    MockServiceProxy,
-    ILoggedServiceCall,
-    IMockServiceOperation,
-    ServiceOperationTypeEnum
-} from './service/MockServiceProxy';
+export { MockServiceProxy } from './service/MockServiceProxy';
+export { ILoggedServiceCall } from './service/mock-service-proxy/MockServiceExecution';
+export { IMockServiceOperation, ServiceOperationTypeEnum } from './service/mock-service-proxy/MockServiceOperations';
 export {IKeyValueStorageProxy} from './key-value-storage/KeyValueStorageProxy';
 export {LocalForageProxy} from './/key-value-storage/LocalForageProxy';
 export {LocalStorageProxy} from './key-value-storage/LocalStorageProxy';
