@@ -1,14 +1,18 @@
 import { MockServiceOperations, IMockServiceOperationResponseFunction } from './MockServiceOperations';
 import { IServiceResponse } from '../ServiceProxy';
 
+export interface IServiceResponseFunctionBaseArgs {
+    urlParameters?: string;
+    requestBody?: any;
+    globalServiceParameters?: any;
+}
+
+export interface IServiceResponseFunctionUrlParameter {
+    [key: string]: string;
+}
+
 export interface IServiceResponseFunction<TResponse> {
-    (
-        args?: {
-            [key: string]: string,
-            requestBody?: any,
-            globalServiceParameters?: any
-        }
-    ): TResponse | IServiceResponse<TResponse>
+    (urlParameters?: any, requestBody?: any, globalServiceParameters?: any): TResponse | IServiceResponse<TResponse>
 }
 
 export class MockServiceDefinitions {
@@ -25,7 +29,7 @@ export class MockServiceDefinitions {
         this.mockServiceOperations.add({
             operationType: 'create',
             urlRegex: this.convertUrlToRegex(url),
-            response: this.getResponseFunction(url, responseFunction)
+            response: this.getResponseFunction<TRequest, TResponse>(url, responseFunction)
         });
     }
 
@@ -36,7 +40,7 @@ export class MockServiceDefinitions {
         this.mockServiceOperations.add({
             operationType: 'read',
             urlRegex: this.convertUrlToRegex(url),
-            response: this.getResponseFunction(url, responseFunction)
+            response: this.getResponseFunction<void, TResponse>(url, responseFunction)
         });
     }
 
@@ -47,7 +51,7 @@ export class MockServiceDefinitions {
         this.mockServiceOperations.add({
             operationType: 'update',
             urlRegex: this.convertUrlToRegex(url),
-            response: this.getResponseFunction(url, responseFunction)
+            response: this.getResponseFunction<TRequest, TResponse>(url, responseFunction)
         });
     }
 
@@ -58,7 +62,7 @@ export class MockServiceDefinitions {
         this.mockServiceOperations.add({
             operationType: 'delete',
             urlRegex: this.convertUrlToRegex(url),
-            response: this.getResponseFunction(url, responseFunction)
+            response: this.getResponseFunction<TRequest, TResponse>(url, responseFunction)
         });
     }
 
@@ -74,11 +78,11 @@ export class MockServiceDefinitions {
                 };
             }
 
-            const response = responseFunction({
-                requestBody: requestBody as any,
-                globalServiceParameters,
-                ...this.getUrlParams(url, urlMatches) as any
-            });
+            const response = responseFunction(
+                this.getUrlParams(url, urlMatches),
+                requestBody,
+                globalServiceParameters
+            );
 
             if (
                 (response as IServiceResponse<TResponse>).responseBody
