@@ -7,6 +7,7 @@ import { IMockServiceProxyOptions } from './MockServiceProxyOptions';
 import { MockServiceOperations } from './MockServiceOperations';
 import { MockServiceRequestValidator } from './MockServiceRequestValidator';
 import { ServiceProxyResponseEvent } from '../ServiceProxyResponseEvent';
+import { ServiceProxyError } from '../ServiceProxyError';
 
 export interface ILoggedServiceCall {
     urlMatches: RegExpMatchArray;
@@ -78,10 +79,9 @@ export class MockServiceExecution {
                 try {
                     response = serviceOperation.response(urlMatches, requestBody, this.parameters);
                 } catch (error) {
-                    response = {
-                        status: 500,
-                        responseBody: error.message
-                    };
+                    const errorMessage = `An error occurred when executing a ${serviceOperation.operationType} request to ${resourcePath}: ${error.message}`;
+                    console.warn(errorMessage);
+                    throw new ServiceProxyError(resourcePath, 500, errorMessage);
                 }                
 
                 this.loggedCalls.push({
