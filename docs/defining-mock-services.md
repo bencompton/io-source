@@ -4,10 +4,10 @@ The `MockServiceProxy` class is a concrete implementation of `IServiceProxy` tha
 
 | MockServiceProxy Method | HTTP Verb |
 | --------------------    | --------- |
-| `addCreateOperation`    | POST      |
-| `addReadOperation`      | GET       |
-| `addUpdateOperation`    | PUT       |
-| `addDeleteOperation`    | DELETE    |
+| addCreateOperation      | POST      |
+| addReadOperation        | GET       |
+| addUpdateOperation      | PUT       |
+| addDeleteOperation      | DELETE    |
 
 For mock services, you define a URI, and optionally, a function to handle requests:
 
