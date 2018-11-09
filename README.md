@@ -109,5 +109,5 @@ npm install io-source --save
 
 ## Additional Documentation
 
-* [Calling Services](./docs/calling-services.md])
+* [Calling Services](./docs/calling-services.md)
 * [Defining Mock Services](./docs/defining-mock-services.md)
