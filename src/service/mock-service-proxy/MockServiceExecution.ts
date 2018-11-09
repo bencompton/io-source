@@ -74,7 +74,15 @@ export class MockServiceExecution {
                 let response: IServiceResponse<TReturn>;
 
                 urlMatches = resourcePath.match(serviceOperation.urlRegex);
-                response = serviceOperation.response(urlMatches, requestBody, this.parameters);                    
+
+                try {
+                    response = serviceOperation.response(urlMatches, requestBody, this.parameters);
+                } catch (error) {
+                    response = {
+                        status: 500,
+                        responseBody: error.message
+                    };
+                }                
 
                 this.loggedCalls.push({
                     urlMatches,
