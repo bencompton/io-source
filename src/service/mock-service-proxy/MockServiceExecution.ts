@@ -57,7 +57,7 @@ export class MockServiceExecution {
         return new Promise(resolve => {
             let timeout : number;
 
-            timeout = this.options.addRandomDelays ? (Math.random() * 500) : 0;
+            timeout = this.options.addRandomDelays ? (Math.random() * 1500) : 0;
             
             setTimeout(() => resolve(), timeout);
         });
