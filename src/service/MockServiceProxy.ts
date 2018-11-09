@@ -90,4 +90,8 @@ export class MockServiceProxy implements IServiceProxy {
     public get responseEvent() {
         return this.serviceProxyResponseEvent;
     }
+
+    public get loggedCalls() {
+        return this.execution.loggedCalls;
+    }
 }
