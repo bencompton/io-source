@@ -68,7 +68,7 @@ serviceProxy.addCreateOperation('/products/product/', (uriParameters, requestBod
   }  
 });
 
-await serviceProxy.createViaService()
+await serviceProxy.createViaService('/my-bank-balance/', { price: 500, name: 'Bicycle' }); // Product create failed!
 
 ```
 ## HTTP Status Codes
