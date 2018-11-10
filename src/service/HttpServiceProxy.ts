@@ -11,7 +11,7 @@ export class HttpServiceProxy implements IServiceProxy {
     private baseUrl: string;
     private serviceProxyResponseEvent: ServiceProxyResponseEvent
 
-    constructor(serializer: ISerializer = JSON, baseUrl: string = '/api/') {
+    constructor(baseUrl: string = '/api/', serializer: ISerializer = JSON) {
         this.serializer = serializer;
         this.globalHeaders = {};
         this.baseUrl = baseUrl;
