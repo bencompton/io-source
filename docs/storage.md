@@ -1,6 +1,6 @@
 # Storage
 
-I/O Source provides wrappers around local storage as well as ([LocalForage](https://github.com/localForage/localForage). Your app will mostly use the `IKeyValueStorageProxy` interface, and you can then dependency inject either a `LocalStorageProxy`, a `LocalForageProxy`, or a `MockKeyValueStorageProxy` (stores data in memory only).
+I/O Source provides wrappers around local storage as well as [LocalForage](https://github.com/localForage/localForage). Your app will mostly use the `IKeyValueStorageProxy` interface, and you can then dependency inject either a `LocalStorageProxy`, a `LocalForageProxy`, or a `MockKeyValueStorageProxy` (stores data in memory only).
 
 ## Basic Usage
 

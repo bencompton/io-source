@@ -4,7 +4,7 @@ Run and integration test your app with the same set of mock data, then switch to
 
 ## Overview
 
-I/O Source is designed to enable Front-End First Development in single-page apps. With I/O Source, you write your front-end code first against mock services that return mock data. Once your front-end is perfected and your workflows, along with the data contract with your web API are well-understood, you can then implement your real web API and effortlessly switch your app between calling your mock API and your real web API. In addition, I/O Source also supports the same flow with browser storage: both local storage and ([LocalForage](https://github.com/localForage/localForage).
+I/O Source is designed to enable Front-End First Development in single-page apps. With I/O Source, you write your front-end code first against mock services that return mock data. Once your front-end is perfected and your workflows, along with the data contract with your web API are well-understood, you can then implement your real web API and effortlessly switch your app between calling your mock API and your real web API. In addition, I/O Source also supports the same flow with browser storage, including both local storage and [LocalForage](https://github.com/localForage/localForage).
 
 In addition, the same mock data and mock services can be leveraged in integration tests. Since your mock services and mock storage are defined with pure JavaScript against in-memory objects, there's no I/O, so your integration tests can test your app much like a real user would with blazing fast performance.
 
