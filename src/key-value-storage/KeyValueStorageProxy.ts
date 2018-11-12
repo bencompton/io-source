@@ -25,7 +25,7 @@ export abstract class KeyValueStorageProxy implements IKeyValueStorageProxy {
                 if (itemString) {
                     return this.serializer.parse<T>(itemString);
                 } else {
-                    throw new Error(`Value "${name}" does not exist`);
+                    return undefined;
                 }
             });
     }
