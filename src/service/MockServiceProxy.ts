@@ -87,7 +87,7 @@ export class MockServiceProxy implements IServiceProxy {
         this.globalResponseHeaders.addGlobalResponseHeader(name, value);
     }
 
-    public addGlobalParameter(name: string, value: string) {
+    public addGlobalParameter(name: string, value: any) {
         this.parameters.setParam(name, value);
     }
 
