@@ -50,7 +50,7 @@ serviceProxy.addUpdateOperation(/\/products\/product\/(\d+)\/price\//, (regexMat
 Many times, it is necessary to modify the behavior on demand of a mock service operation, such as when writing tests. The service proxy allows passing in parameters that service operations can access:
 
 ```javascript
-serviceProxy.setParameter('bank-balance', 20);
+serviceProxy.addGlobalParameter('bank-balance', 20);
 
 serviceProxy.addReadOperation('/my-bank-balance/', (uriParameters, requestBody, globalParams) => {
   return globalParams['bank-balance'];
@@ -58,7 +58,7 @@ serviceProxy.addReadOperation('/my-bank-balance/', (uriParameters, requestBody, 
 
 const bankBalance = await serviceProxy.readViaService('/my-bank-balance/'); // 20
 
-serviceProxy.setParameter('make-product-create-fail', true);
+serviceProxy.addGlobalParameter('make-product-create-fail', true);
 
 serviceProxy.addCreateOperation('/products/product/', (uriParameters, requestBody, globalParams) => {
   if (globalParams['make-product-create-fail'] === true) {
