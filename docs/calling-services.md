@@ -4,10 +4,10 @@ Your code that makes your service calls should normally depend on `IServiceProxy
 
 | IServiceProxy Method | HTTP Verb |
 | -------------------- | --------- |
-| `createViaService`   | POST      |
-| `readViaService`     | GET       |
-| `updateViaService`   | PUT       |
-| `deleteViaService`   | DELETE    |
+| createViaService     | POST      |
+| readViaService       | GET       |
+| updateViaService     | PUT       |
+| deleteViaService     | DELETE    |
 
 ## createViaService
 
