@@ -84,7 +84,12 @@ export class MockServiceDefinitions {
                 globalServiceParameters
             );
 
-            if (
+            if (!response) {
+                return {
+                    status: 204,
+                    responseBody: null
+                };
+            } else if (
                 (response as IServiceResponse<TResponse>).responseBody
                 && (response as IServiceResponse<TResponse>).status
             ) {
