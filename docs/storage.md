@@ -25,3 +25,38 @@ All implentations of `IKeyValueStorageProxy` support the following:
   // Remove an item from storage
   storageProxy.removeItem('products');
 ```
+
+## LocalStorageProxy
+
+```javascript
+import { LocalStorageProxy } from 'io-source';
+
+const storageProxy = new LocalStorageProxy();
+```
+
+## LocalForageProxy
+
+```javascript
+import { LocalForageProxy } from 'io-source';
+
+const storageProxy = new LocalForageProxy();
+```
+
+## MockStorageProxy
+
+```javascript
+import { MockStorageProxy } from 'io-source';
+
+const storageProxy = new MockStorageProxy();
+```
+
+## Custom Serialization
+
+`LocalForageProxy` and `LocalStorageProxy` both support custom serializers (any object implementing `stringify` and `parse`). io-source provides a `CircularSerializer`, which leverages Douglass Crockford's [Circular JSON](https://github.com/douglascrockford/JSON-js/blob/master/cycle.js) implementation, and can be used to deserialize objects that have circular references:
+
+```javascript
+import { localStorageProxy, localForageProxy, CircularSerializer } from 'io-source'
+
+const localStorageProxyWithCircularSerializer = new LocalStorageProxy(new CircularSerializer());
+const localForageProxyWithCircularSerializer = new LocalForageProxy(new CircularSerializer());
+```

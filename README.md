@@ -114,3 +114,4 @@ npm install io-source --save
 * [Calling Services](./docs/calling-services.md)
 * [Defining Mock Services](./docs/defining-mock-services.md)
 * [Storage](./docs/storage.md)
+* [Connectivity Monitor](./docs/connectivity-monitor.md)
