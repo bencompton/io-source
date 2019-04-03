@@ -90,7 +90,7 @@ export class MockServiceDefinitions {
                     responseBody: null
                 };
             } else if (
-                (response as IServiceResponse<TResponse>).responseBody
+                (response as IServiceResponse<TResponse>).responseBody !== undefined
                 && (response as IServiceResponse<TResponse>).status
             ) {
                 return {
