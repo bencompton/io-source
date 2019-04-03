@@ -1,5 +1,5 @@
 import { IServiceResponse } from '../ServiceProxy';
-import { IConnectivityMonitor } from '../ConnectivityMonitor';
+import { IConnectivityMonitor, MockConnectivityMonitor } from '../ConnectivityMonitor';
 import { MockServiceParameters } from './MockServiceParameters';
 import { ServiceOperationTypeEnum, IMockServiceOperation } from './MockServiceOperations';
 import { GlobalResponseHeaders } from './GlobalResponseHeaders';
@@ -27,7 +27,6 @@ export class MockServiceExecution {
     constructor(
         options: IMockServiceProxyOptions,
         operations: MockServiceOperations,
-        connectivityMonitor: IConnectivityMonitor,
         parameters: MockServiceParameters,
         globalResponseHeaders: GlobalResponseHeaders,
         serviceProxyResponseEvent: ServiceProxyResponseEvent
@@ -36,7 +35,7 @@ export class MockServiceExecution {
         this.operations = operations;
         this.parameters = parameters;
         this.globalResponseHeaders = globalResponseHeaders,
-        this.requestValidator = new MockServiceRequestValidator(connectivityMonitor);
+        this.requestValidator = new MockServiceRequestValidator(null);
         this.serviceProxyResponseEvent = serviceProxyResponseEvent;
     }
 
@@ -52,6 +51,10 @@ export class MockServiceExecution {
             .then(() => {
                 return this.executeServiceOperation(resourcePath, matchingOperations[0], data);
             });
+    }
+
+    public listenToConnectivityMonitor(connectivityMonitor: MockConnectivityMonitor) {
+        this.requestValidator = new MockServiceRequestValidator(connectivityMonitor);
     }
 
     private waitForRandomDelay() {

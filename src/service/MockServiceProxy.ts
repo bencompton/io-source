@@ -13,7 +13,6 @@ export class MockServiceProxy implements IServiceProxy {
     private operations: MockServiceOperations;
     private parameters: MockServiceParameters;
     private serviceProxyResponseEvent: ServiceProxyResponseEvent;
-    private connectivityMonitor: MockConnectivityMonitor;
     private execution: MockServiceExecution;
     private globalResponseHeaders: GlobalResponseHeaders;
     private serviceDefinitions: MockServiceDefinitions;
@@ -27,7 +26,6 @@ export class MockServiceProxy implements IServiceProxy {
         this.execution = new MockServiceExecution(
             this.options,
             this.operations,
-            this.connectivityMonitor,
             this.parameters,
             this.globalResponseHeaders,
             this.serviceProxyResponseEvent
@@ -36,7 +34,7 @@ export class MockServiceProxy implements IServiceProxy {
     }
 
     public listenToConnectivityMonitor(connectivityMonitor: MockConnectivityMonitor) {
-        this.connectivityMonitor = connectivityMonitor;
+        this.execution.listenToConnectivityMonitor(connectivityMonitor);
     }
 
     public createViaService<TData, TReturn>(resourcePath: string, data: TData): Promise<TReturn> {
