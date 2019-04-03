@@ -1,6 +1,6 @@
 {
   "name": "io-source",
-  "version": "2.0.15",
+  "version": "2.0.16",
   "description": "Develop and test your apps with a common set of mock data, then switch to real data at any time",
   "main": "dist/src/index.js",
   "typings": "dist/src/index.d.ts",
