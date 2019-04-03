@@ -63,7 +63,11 @@ export class MockServiceExecution {
 
             timeout = this.options.addRandomDelays ? (Math.random() * 1500) : 0;
             
-            setTimeout(() => resolve(), timeout);
+            if (timeout === 0) {
+                resolve();
+            } else {
+                setTimeout(() => resolve(), timeout);
+            }
         });
     }
 
