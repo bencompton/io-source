@@ -97,7 +97,7 @@ export class MockServiceExecution {
                 
                 this.serviceProxyResponseEvent.fire(response); 
 
-                if (response.status >= 200 && response.status < 400) {
+                if (response.status >= 400) {
                     throw new ServiceProxyError(resourcePath, response.status, response.responseBody);
                 }
 
