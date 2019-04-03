@@ -3,8 +3,6 @@ import { IServiceResponse } from '../ServiceProxy';
 export class GlobalResponseHeaders {
     private globalResponseHeaders: {[name: string]: string | (() => string)} = {};
 
-    public addGlobalResponseHeader(name: string, value: string): void;
-    public addGlobalResponseHeader(name: string, value: () => string): void;
     public addGlobalResponseHeader(name: string, value: (() => string) | string) {
         this.globalResponseHeaders[name] = value;
     }

@@ -81,7 +81,7 @@ export class MockServiceProxy implements IServiceProxy {
         this.serviceDefinitions.addDeleteOperation(url, responseFunction);
     }
     
-    public addGlobalResponseHeader(name: string, value: string) {
+    public addGlobalResponseHeader(name: string, value: (() => string) | string) {
         this.globalResponseHeaders.addGlobalResponseHeader(name, value);
     }
 
