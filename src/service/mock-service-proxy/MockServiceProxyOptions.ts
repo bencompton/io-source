@@ -1,3 +1,4 @@
 export interface IMockServiceProxyOptions {
-    addRandomDelays: boolean;
+    addRandomDelays?: boolean;
+    maxRandomDelayMilliseconds?: number;
 }
