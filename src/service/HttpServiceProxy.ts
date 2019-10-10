@@ -78,7 +78,7 @@ export class HttpServiceProxy implements IServiceProxy {
                         responseBody = <TReturn>(<any>responseJson);
                     }
 
-                    this.serviceProxyResponseEvent.fire({ status: response.status, responseBody, headers: this.extractHeaders(response.headers) });
+                    this.serviceProxyResponseEvent.fire({ status: response.status, responseBody, headers: this.extractHeaders(response.headers) }, url);
 
                     return responseBody;
                 });
@@ -87,7 +87,7 @@ export class HttpServiceProxy implements IServiceProxy {
                 .then(errorResponseText => {
                     const error = new ServiceProxyError(url, response.status, errorResponseText);
 
-                    this.serviceProxyResponseEvent.fire({ status: response.status, responseBody: errorResponseText, headers: this.extractHeaders(response.headers) });
+                    this.serviceProxyResponseEvent.fire({ status: response.status, responseBody: errorResponseText, headers: this.extractHeaders(response.headers) }, url);
 
                     return <Promise<TReturn>>Promise.reject(error);
                 });

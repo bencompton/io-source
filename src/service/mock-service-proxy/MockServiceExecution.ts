@@ -89,7 +89,11 @@ export class MockServiceExecution {
                 } catch (error) {
                     const errorMessage = `An error occurred when executing a ${serviceOperation.operationType} request to ${resourcePath}: ${error.message}`;
                     console.warn(errorMessage);
-                    throw new ServiceProxyError(resourcePath, 500, errorMessage);
+
+                    response = {
+                        status: 500,
+                        responseBody: { message: errorMessage }
+                    }
                 }                
 
                 this.loggedCalls.push({
@@ -100,7 +104,7 @@ export class MockServiceExecution {
 
                 this.globalResponseHeaders.addGlobalResponseHeaders(response);
                 
-                this.serviceProxyResponseEvent.fire(response); 
+                this.serviceProxyResponseEvent.fire(response);                 
 
                 if (response.status >= 400) {
                     throw new ServiceProxyError(resourcePath, response.status, response.responseBody);
