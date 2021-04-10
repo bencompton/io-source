@@ -8,7 +8,7 @@ I/O Source is designed to enable Front-End First Development in single-page apps
 
 In addition, the same mock data and mock services can be leveraged in integration tests. Since your mock services and mock storage are defined with pure JavaScript against in-memory objects, there's no I/O, so your integration tests can test your app much like a real user would with blazing fast performance.
 
-[This tutorial](https://github.com/bencompton/frontend-first-development-tutorial) on leveraging I/O Source with React and Redux might be an interesting read. It's admittedly opinionated and biased towards this author's other OSS libraries, though the concepts it covers are generally applicable.
+[This tutorial](https://github.com/bencompton/frontend-first-development-tutorial) on leveraging I/O Source with React and Redux might be an interesting read. It's admittedly opinionated and biased towards this author's other OSS libraries, though the general concepts it covers are widely applicable.
 
  ## How It Works
 
