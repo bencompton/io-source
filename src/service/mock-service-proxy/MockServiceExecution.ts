@@ -58,7 +58,7 @@ export class MockServiceExecution {
     }
 
     private waitForRandomDelay() {
-        return new Promise(resolve => {
+        return new Promise<void>(resolve => {
             let timeout : number;
             const randomDelayMilliseconds = this.options.maxRandomDelayMilliseconds || 1500;
 

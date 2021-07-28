@@ -1,16 +1,14 @@
 {
     "compilerOptions": {
-        "target": "es5",
+        "target": "ES2018",
         "declaration": true,
-        "module": "commonjs",
-        "sourceMap": false,
-        "moduleResolution": "node",
-        "emitDecoratorMetadata": true,
-        "experimentalDecorators": true,
+        "module": "ES2020",
+        "sourceMap": true,
+        "moduleResolution": "Node",
         "outDir": "dist",
         "strict": true,
         "strictNullChecks": false,
         "rootDir": ".",
-        "lib": ["es2015", "dom"]
+        "lib": ["esnext", "DOM"]
     }
 }
