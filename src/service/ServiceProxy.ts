@@ -11,7 +11,7 @@ export interface IServiceResponseError {
 export interface IServiceResponse<T> {
     status: number;
     responseBody: T | IServiceResponseError;
-    headers?: IHttpHeaders;
+    headers?: Headers;
 }
 
 export interface IServiceProxy {    
