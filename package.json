@@ -1,6 +1,6 @@
 {
   "name": "io-source",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Develop and test your apps with a common set of mock data, then switch to real data at any time",
   "main": "dist/es5/src/index.js",
   "module": "dist/esnext/src/index.js",
