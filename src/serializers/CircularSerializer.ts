@@ -1,9 +1,9 @@
-﻿import {ISerializer} from './Serializer';
+﻿import {ISerializer, Reviver} from './Serializer';
 
 export class CircularSerializer implements ISerializer {
-    public parse<T>(json: string): T {
+    public parse<T>(json: string, reviver?: Reviver): T {
 
-        const obj = JSON.parse(json);
+        const obj = JSON.parse(json, reviver);
         return <T>JsonNetDecycle.retrocycle(obj);
     }
 
