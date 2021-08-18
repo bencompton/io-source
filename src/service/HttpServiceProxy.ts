@@ -8,10 +8,10 @@ import {ServiceProxyError} from './ServiceProxyError';
 export class HttpServiceProxy implements IServiceProxy {
     private serializer: ISerializer;
     private globalHeaders: { [headerName: string]: string};
-    private baseUrl: string;
+    private baseUrl: string | null;
     private serviceProxyResponseEvent: ServiceProxyResponseEvent
 
-    constructor(baseUrl: string = '/api/', serializer: ISerializer = JSON) {
+    constructor(baseUrl: string | null = null, serializer: ISerializer = JSON) {
         this.serializer = serializer;
         this.globalHeaders = {};
         this.baseUrl = baseUrl;
@@ -48,8 +48,7 @@ export class HttpServiceProxy implements IServiceProxy {
         data?: TData,
         options?: IServiceCallOptions
     ): Promise<TReturn> {
-        const url = this.baseUrl + resourcePath;
-
+        const url = this.baseUrl ? this.baseUrl + resourcePath : resourcePath;
         const deserializeResponse = options && options.deserializeResponse || undefined;
         const headersFromOptions = options && options.headers || {};
 
