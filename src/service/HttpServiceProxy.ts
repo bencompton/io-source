@@ -1,7 +1,7 @@
 ﻿import 'whatwg-fetch';
 
 import {ISerializer} from '../serializers/Serializer';
-import {IServiceProxy, IServiceResponse, IHttpHeaders} from './ServiceProxy';
+import {IServiceProxy, IServiceResponse, IHttpHeaders, IServiceCallOptions} from './ServiceProxy';
 import {ServiceProxyResponseEvent} from './ServiceProxyResponseEvent';
 import {ServiceProxyError} from './ServiceProxyError';
 
@@ -26,24 +26,32 @@ export class HttpServiceProxy implements IServiceProxy {
         this.globalHeaders[headerName] = headerValue;
     }
 
-    public createViaService<TData, TReturn>(resourcePath: string, data: TData, deserializeResponse: boolean = true): Promise<TReturn> {
-        return this.ajaxRequest<TData, TReturn>('POST', resourcePath, data, deserializeResponse);
+    public createViaService<TData, TReturn>(resourcePath: string, data: TData, options?: IServiceCallOptions): Promise<TReturn> {
+        return this.ajaxRequest<TData, TReturn>('POST', resourcePath, data, options);
     }
 
-    public readViaService<T>(resourcePath: string, deserializeResponse: boolean = true): Promise<T> {
-        return this.ajaxRequest<void, T>('GET', resourcePath, null, deserializeResponse);
+    public readViaService<T>(resourcePath: string, options?: IServiceCallOptions): Promise<T> {
+        return this.ajaxRequest<void, T>('GET', resourcePath, null, options);
     }
 
-    public updateViaService<TData, TReturn>(resourcePath: string, data: TData, deserializeResponse: boolean = true): Promise<TReturn> {
-        return this.ajaxRequest<TData, TReturn>('PUT', resourcePath, data, deserializeResponse);
+    public updateViaService<TData, TReturn>(resourcePath: string, data: TData, options?: IServiceCallOptions): Promise<TReturn> {
+        return this.ajaxRequest<TData, TReturn>('PUT', resourcePath, data, options);
     }
 
-    public deleteViaService<TData, TReturn>(resourcePath: string, data: TData, deserializeResponse: boolean = true): Promise<TReturn> {
-        return this.ajaxRequest<TData, TReturn>('DELETE', resourcePath, data, deserializeResponse);
+    public deleteViaService<TData, TReturn>(resourcePath: string, data: TData, options?: IServiceCallOptions): Promise<TReturn> {
+        return this.ajaxRequest<TData, TReturn>('DELETE', resourcePath, data, options);
     }
 
-    private ajaxRequest<TData, TReturn>(verb: string, resourcePath: string, data?: TData, deserializeResponse: boolean = true): Promise<TReturn> {
+    private ajaxRequest<TData, TReturn>(
+        verb: string,
+        resourcePath: string,
+        data?: TData,
+        options?: IServiceCallOptions
+    ): Promise<TReturn> {
         const url = this.baseUrl + resourcePath;
+
+        const deserializeResponse = options && options.deserializeResponse || undefined;
+        const headersFromOptions = options && options.headers || {};
 
         const config: any = {
             method: verb,
@@ -54,7 +62,7 @@ export class HttpServiceProxy implements IServiceProxy {
             }
         };
 
-        config.headers = { ...config.headers, ...this.globalHeaders };
+        config.headers = { ...config.headers, ...this.globalHeaders, ...headersFromOptions };
 
         if (verb !== 'GET') {
             config.body = this.serializer.stringify(data);
