@@ -17,6 +17,7 @@ export interface IServiceResponse<T> {
 export interface IServiceCallOptions {
     headers?: IHttpHeaders;
     deserializeResponse?: boolean;
+    serializeRequest?: boolean;
 }
 
 export interface IServiceProxy {    

@@ -49,22 +49,49 @@ export class HttpServiceProxy implements IServiceProxy {
         options?: IServiceCallOptions
     ): Promise<TReturn> {
         const url = this.baseUrl ? this.baseUrl + resourcePath : resourcePath;
-        const deserializeResponse = options && options.deserializeResponse || undefined;
+        const deserializeResponse = options && options.deserializeResponse || true;
+        const serializeRequest = options && options.serializeRequest || true;
         const headersFromOptions = options && options.headers || {};
+        const defaultHeaders: { [header: string]: string } = {};
+
+        let acceptHeaderOverridden = false;
+        let contentTypeHeaderOverridden = false;
+
+        if (options && options.headers) {
+            Object.keys(options.headers).forEach((header) => {
+                const lowerCaseHeader = header.toLocaleLowerCase();
+
+                if (lowerCaseHeader === 'accept') {
+                    acceptHeaderOverridden = true;
+                }
+
+                if (lowerCaseHeader === 'content-type') {
+                    contentTypeHeaderOverridden = true;
+                }
+            });
+        }
+
+        if (!contentTypeHeaderOverridden) {
+            defaultHeaders['content-type'] = 'application/json';
+        }
+
+        if (!acceptHeaderOverridden) {
+            defaultHeaders['accept'] = 'application/json';
+        }
 
         const config: any = {
             method: verb,
-            credentials: 'include',
-            headers: {
-                accept: 'application/json',
-                'content-type': 'application/json'
-            }
+            credentials: 'include'
         };
 
-        config.headers = { ...config.headers, ...this.globalHeaders, ...headersFromOptions };
+        config.headers = { ...defaultHeaders, ...this.globalHeaders, ...headersFromOptions };
 
         if (verb !== 'GET') {
-            config.body = this.serializer.stringify(data);
+            if (serializeRequest) {
+                config.body = this.serializer.stringify(data);
+            } else {
+                config.body = data;
+            }
         }
 
         return fetch(url, config)
