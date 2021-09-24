@@ -18,6 +18,7 @@ export interface IServiceCallOptions {
     headers?: IHttpHeaders;
     deserializeResponse?: boolean;
     serializeRequest?: boolean;
+    returnRawResponseBlob?: boolean;
 }
 
 export interface IServiceProxy {    

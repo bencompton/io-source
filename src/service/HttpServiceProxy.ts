@@ -1,7 +1,7 @@
 ﻿import 'whatwg-fetch';
 
 import {ISerializer} from '../serializers/Serializer';
-import {IServiceProxy, IServiceResponse, IHttpHeaders, IServiceCallOptions} from './ServiceProxy';
+import {IServiceProxy, IServiceCallOptions} from './ServiceProxy';
 import {ServiceProxyResponseEvent} from './ServiceProxyResponseEvent';
 import {ServiceProxyError} from './ServiceProxyError';
 
@@ -49,8 +49,9 @@ export class HttpServiceProxy implements IServiceProxy {
         options?: IServiceCallOptions
     ): Promise<TReturn> {
         const url = this.baseUrl ? this.baseUrl + resourcePath : resourcePath;
-        const deserializeResponse = options && options.deserializeResponse || true;
-        const serializeRequest = options && options.serializeRequest || true;
+        const deserializeResponse = (options && options.deserializeResponse) !== undefined ? options.deserializeResponse : true;
+        const returnRawResponseBlob = !deserializeResponse && (options && options.returnRawResponseBlob) !== undefined ? options.returnRawResponseBlob : false;
+        const serializeRequest = (options && options.serializeRequest) !== undefined ? options.serializeRequest : true;
         const headersFromOptions = options && options.headers || {};
         const defaultHeaders: { [header: string]: string } = {};
 
@@ -96,26 +97,41 @@ export class HttpServiceProxy implements IServiceProxy {
 
         return fetch(url, config)
             .then(response => {
-                return <Promise<TReturn>>this.handleResponse(url, response, deserializeResponse);
+                return <Promise<TReturn>>this.handleResponse(
+                    url,
+                    response,
+                    deserializeResponse,
+                    returnRawResponseBlob
+                );
             });
     }
 
-    private handleResponse<TReturn>(url: string, response: Response, deserializeResponse: boolean): Promise<TReturn> {
+    private async handleResponse<TReturn>(
+        url: string,
+        response: Response,
+        deserializeResponse: boolean,
+        returnRawResponseBlob: boolean
+    ): Promise<TReturn> {
         if (response.status >= 200 && response.status < 400) {
-            return response.text()
-                .then(responseJson => {
-                    let responseBody: TReturn;
+            let responseBody: TReturn = null;
 
-                    if (deserializeResponse && !!responseJson) {
-                        responseBody = this.serializer.parse<TReturn>(responseJson);
-                    } else {
-                        responseBody = <TReturn>(<any>responseJson);
-                    }
+            if (returnRawResponseBlob) {
+                responseBody = await response.blob() as any;
+            } else {
+                const responseJson = await response.text()
 
-                    this.serviceProxyResponseEvent.fire({ status: response.status, responseBody, headers: response.headers }, url);
+                let responseBody: TReturn;
 
-                    return responseBody;
-                });
+                if (deserializeResponse && !!responseJson) {
+                    responseBody = this.serializer.parse<TReturn>(responseJson);
+                } else {
+                    responseBody = <TReturn>(<any>responseJson);
+                }
+            }
+
+            this.serviceProxyResponseEvent.fire({ status: response.status, responseBody, headers: response.headers }, url);
+
+            return responseBody;
         } else {
             return response.text()
                 .then(errorResponseText => {
