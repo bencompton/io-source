@@ -6,6 +6,7 @@ The `MockServiceProxy` class is a concrete implementation of `IServiceProxy` tha
 | --------------------    | --------- |
 | addCreateOperation      | POST      |
 | addReadOperation        | GET       |
+| addPatchOperation       | PATCH     |
 | addUpdateOperation      | PUT       |
 | addDeleteOperation      | DELETE    |
 
@@ -16,6 +17,10 @@ serviceProxy.addReadOperation('/my-bank-balance/', () => 10000000000000000);
 
 serviceProxy.addCreateOperation('/products/product/', (uriParameters, requestBody) => {
   mockProducts.push({ id: mockProducts.length, requestBody.price, requestBody.name });
+});
+
+serviceProxy.addPatchOperation('/high-score/', (uriParameters, requestBody) => {
+  highScore = requestBody;
 });
 
 serviceProxy.addUpdateOperation('/high-score/', (uriParameters, requestBody) => {
@@ -65,7 +70,7 @@ serviceProxy.addCreateOperation('/products/product/', (uriParameters, requestBod
     throw new Error('Product create failed!');
   } else {
     mockProducts.push({ id: mockProducts.length, requestBody.price, requestBody.name });
-  }  
+  }
 });
 
 await serviceProxy.createViaService('/my-bank-balance/', { price: 500, name: 'Bicycle' }); // Product create failed!

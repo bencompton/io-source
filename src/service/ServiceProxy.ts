@@ -21,10 +21,11 @@ export interface IServiceCallOptions {
     returnRawResponseBlob?: boolean;
 }
 
-export interface IServiceProxy {    
+export interface IServiceProxy {
     createViaService<TData, TReturn>(resourcePath: string, data: TData, options?: IServiceCallOptions): Promise<TReturn>;
     readViaService<T>(resourcePath: string, options?: IServiceCallOptions): Promise <T>;
+    patchViaService<TData, TReturn>(resourcePath: string, data: TData, options?: IServiceCallOptions): Promise <TReturn>;
     updateViaService<TData, TReturn>(resourcePath: string, data: TData, options?: IServiceCallOptions): Promise <TReturn>;
     deleteViaService<TData, TReturn>(resourcePath: string, data: TData, options?: IServiceCallOptions): Promise <TReturn>;
-    responseEvent: ServiceProxyResponseEvent;    
+    responseEvent: ServiceProxyResponseEvent;
 }

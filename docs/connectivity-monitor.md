@@ -14,7 +14,7 @@ When creating applications that need to handle spotty connectivity or work offli
       return storageProxy.getItem('/user-session/');
     } else {
       throw error;
-    }    
+    }
   }
 ```
 

@@ -34,6 +34,10 @@ export class HttpServiceProxy implements IServiceProxy {
         return this.ajaxRequest<void, T>('GET', resourcePath, null, options);
     }
 
+    public patchViaService<TData, TReturn>(resourcePath: string, data: TData, options?: IServiceCallOptions): Promise<TReturn> {
+        return this.ajaxRequest<TData, TReturn>('PATCH', resourcePath, data, options);
+    }
+
     public updateViaService<TData, TReturn>(resourcePath: string, data: TData, options?: IServiceCallOptions): Promise<TReturn> {
         return this.ajaxRequest<TData, TReturn>('PUT', resourcePath, data, options);
     }

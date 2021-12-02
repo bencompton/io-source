@@ -6,6 +6,7 @@ Your code that makes your service calls should normally depend on `IServiceProxy
 | -------------------- | --------- |
 | createViaService     | POST      |
 | readViaService       | GET       |
+| patchViaService      | PATCH     |
 | updateViaService     | PUT       |
 | deleteViaService     | DELETE    |
 
@@ -26,6 +27,13 @@ const bankBalance = await serviceProxy.readViaService('/my-bank-balance/');
 // Can use generics in TypeScript to specify the expected response type
 const bankBalance = await serviceProxy.readViaService<number>('/my-bank-balance/');
 ```
+## patchViaService
+
+```javascript
+await serviceProxy.patchViaService('/my-bank-balance/', 10000000000000000);
+
+// Payload is optional
+await serviceProxy.patchViaService('/foo-bar/');
 
 ## updateViaService
 

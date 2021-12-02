@@ -44,6 +44,17 @@ export class MockServiceDefinitions {
         });
     }
 
+    public addPatchOperation<TRequest, TResponse>(
+        url: string | RegExp,
+        responseFunction?: IServiceResponseFunction<TResponse>
+    ) {
+        this.mockServiceOperations.add({
+            operationType: 'patch',
+            urlRegex: this.convertUrlToRegex(url),
+            response: this.getResponseFunction<TRequest, TResponse>(url, responseFunction)
+        });
+    }
+
     public addUpdateOperation<TRequest, TResponse>(
         url: string | RegExp,
         responseFunction?: IServiceResponseFunction<TResponse>

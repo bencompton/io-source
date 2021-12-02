@@ -45,6 +45,10 @@ export class MockServiceProxy implements IServiceProxy {
         return this.execution.fakeAjaxCall<void, T>('read', resourcePath, null);
     }
 
+    public patchViaService<TData, TReturn>(resourcePath: string, data: TData): Promise<TReturn> {
+        return this.execution.fakeAjaxCall<TData, TReturn>('patch', resourcePath, data);
+    }
+
     public updateViaService<TData, TReturn>(resourcePath: string, data: TData): Promise<TReturn> {
         return this.execution.fakeAjaxCall<TData, TReturn>('update', resourcePath, data);
     }
@@ -80,7 +84,7 @@ export class MockServiceProxy implements IServiceProxy {
     ) {
         this.serviceDefinitions.addDeleteOperation(url, responseFunction);
     }
-    
+
     public addGlobalResponseHeader(name: string, value: (() => string) | string) {
         this.globalResponseHeaders.addGlobalResponseHeader(name, value);
     }
