@@ -13,6 +13,7 @@ export interface IMockServiceOperation<TRequest, TResponse> {
 export type ServiceOperationTypeEnum =
     'create'
     | 'read'
+    | 'patch'
     | 'update'
     | 'delete';
 
@@ -40,5 +41,5 @@ export class MockServiceOperations {
         }
 
         return matchingOperations;
-    }   
+    }
 }
