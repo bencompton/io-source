@@ -50,7 +50,7 @@ export class HttpServiceProxy implements IServiceProxy {
     ): Promise<TReturn> {
         const url = this.baseUrl ? this.baseUrl + resourcePath : resourcePath;
         const deserializeResponse = (options && options.deserializeResponse) !== undefined ? options.deserializeResponse : true;
-        const returnRawResponseBlob = !deserializeResponse && (options && options.returnRawResponseBlob) !== undefined ? options.returnRawResponseBlob : false;
+        const returnRawResponseBlob = (options && options.returnRawResponseBlob) !== undefined ? options.returnRawResponseBlob : false;
         const serializeRequest = (options && options.serializeRequest) !== undefined ? options.serializeRequest : true;
         const headersFromOptions = options && options.headers || {};
         const defaultHeaders: { [header: string]: string } = {};
@@ -119,8 +119,6 @@ export class HttpServiceProxy implements IServiceProxy {
                 responseBody = await response.blob() as any;
             } else {
                 const responseJson = await response.text()
-
-                let responseBody: TReturn;
 
                 if (deserializeResponse && !!responseJson) {
                     responseBody = this.serializer.parse<TReturn>(responseJson);
