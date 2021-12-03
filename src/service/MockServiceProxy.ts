@@ -71,6 +71,13 @@ export class MockServiceProxy implements IServiceProxy {
         this.serviceDefinitions.addReadOperation(url, responseFunction);
     }
 
+    public addPatchOperation<TRequest, TResponse>(
+        url: string | RegExp,
+        responseFunction?: IServiceResponseFunction<TResponse>
+    ) {
+        this.serviceDefinitions.addUpdateOperation(url, responseFunction);
+    }
+
     public addUpdateOperation<TRequest, TResponse>(
         url: string | RegExp,
         responseFunction?: IServiceResponseFunction<TResponse>
