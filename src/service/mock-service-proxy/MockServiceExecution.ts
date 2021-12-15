@@ -1,5 +1,4 @@
 import { IServiceResponse } from '../ServiceProxy';
-import { IConnectivityMonitor, MockConnectivityMonitor } from '../ConnectivityMonitor';
 import { MockServiceParameters } from './MockServiceParameters';
 import { ServiceOperationTypeEnum, IMockServiceOperation } from './MockServiceOperations';
 import { GlobalResponseHeaders } from './GlobalResponseHeaders';
@@ -35,7 +34,7 @@ export class MockServiceExecution {
         this.operations = operations;
         this.parameters = parameters;
         this.globalResponseHeaders = globalResponseHeaders,
-        this.requestValidator = new MockServiceRequestValidator(null);
+        this.requestValidator = new MockServiceRequestValidator();
         this.serviceProxyResponseEvent = serviceProxyResponseEvent;
     }
 
@@ -45,16 +44,13 @@ export class MockServiceExecution {
         data: TData
     ) {
         const matchingOperations = this.operations.getMatchingOperations<TData, TReturn>(operationType, resourcePath);
+        this.requestValidator.validateRequest(operationType, resourcePath, matchingOperations)
 
-        return this.requestValidator
-            .validateRequest(operationType, resourcePath, matchingOperations)
-            .then(() => {
-                return this.executeServiceOperation(resourcePath, matchingOperations[0], data);
-            });
+        return this.executeServiceOperation(resourcePath, matchingOperations[0], data);
     }
 
-    public listenToConnectivityMonitor(connectivityMonitor: MockConnectivityMonitor) {
-        this.requestValidator = new MockServiceRequestValidator(connectivityMonitor);
+    public setConnectivityStatus(isOnline: boolean) {
+        this.requestValidator.setConnectivityStatus(isOnline);
     }
 
     private waitForRandomDelay() {
@@ -87,7 +83,7 @@ export class MockServiceExecution {
                 try {
                     response = serviceOperation.response(urlMatches, requestBody, this.parameters.params);
                 } catch (error) {
-                    const errorMessage = `An error occurred when executing a ${serviceOperation.operationType} request to ${resourcePath}: ${error.message}`;
+                    const errorMessage = `An error occurred when executing a ${serviceOperation.operationType} request to ${resourcePath}: ${(error as Error).message}`;
                     console.warn(errorMessage);
 
                     response = {
