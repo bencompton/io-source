@@ -96,7 +96,7 @@ export class MockServiceExecution {
                 urlMatches = resourcePath.match(serviceOperation.urlRegex);
 
                 try {
-                    response = serviceOperation.response(urlMatches, requestBody, this.parameters.params);
+                    response = serviceOperation.response(urlMatches, requestBody, options, this.parameters.params);
                 } catch (error) {
                     const errorMessage = `An error occurred when executing a ${serviceOperation.operationType} request to ${resourcePath}: ${error.message}`;
                     console.warn(errorMessage);
