@@ -9,5 +9,4 @@ export {LocalForageProxy} from './/key-value-storage/LocalForageProxy';
 export {LocalStorageProxy} from './key-value-storage/LocalStorageProxy';
 export {MockKeyValueStorageProxy} from './key-value-storage/MockKeyValueStorageProxy';
 export {CircularSerializer} from './serializers/CircularSerializer';
-export {ConnectionStatusEnum, IConnectivityMonitor, ConnectivityMonitor, MockConnectivityMonitor} from './service/ConnectivityMonitor';
 export {ServiceProxyError} from './service/ServiceProxyError';

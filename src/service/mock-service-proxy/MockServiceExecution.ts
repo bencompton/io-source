@@ -38,7 +38,7 @@ export class MockServiceExecution {
         this.operations = operations;
         this.parameters = parameters;
         this.globalResponseHeaders = globalResponseHeaders,
-        this.requestValidator = new MockServiceRequestValidator(null);
+        this.requestValidator = new MockServiceRequestValidator();
         this.serviceProxyResponseEvent = serviceProxyResponseEvent;
         this.globalHeaders = globalHeaders;
     }
@@ -50,16 +50,13 @@ export class MockServiceExecution {
         options: IServiceCallOptions
     ) {
         const matchingOperations = this.operations.getMatchingOperations<TData, TReturn>(operationType, resourcePath);
+        this.requestValidator.validateRequest(operationType, resourcePath, matchingOperations)
 
-        return this.requestValidator
-            .validateRequest(operationType, resourcePath, matchingOperations)
-            .then(() => {
-                return this.executeServiceOperation(resourcePath, matchingOperations[0], data, options);
-            });
+        return this.executeServiceOperation(resourcePath, matchingOperations[0], data, options);
     }
 
-    public listenToConnectivityMonitor(connectivityMonitor: MockConnectivityMonitor) {
-        this.requestValidator = new MockServiceRequestValidator(connectivityMonitor);
+    public setConnectivityStatus(isOnline: boolean) {
+        this.requestValidator.setConnectivityStatus(isOnline);
     }
 
     private waitForRandomDelay() {
@@ -98,7 +95,7 @@ export class MockServiceExecution {
                 try {
                     response = serviceOperation.response(urlMatches, requestBody, options, this.parameters.params);
                 } catch (error) {
-                    const errorMessage = `An error occurred when executing a ${serviceOperation.operationType} request to ${resourcePath}: ${error.message}`;
+                    const errorMessage = `An error occurred when executing a ${serviceOperation.operationType} request to ${resourcePath}: ${(error as Error).message}`;
                     console.warn(errorMessage);
 
                     response = {

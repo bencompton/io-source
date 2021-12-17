@@ -1,6 +1,5 @@
 ﻿import { IServiceProxy, IServiceCallOptions, IHttpHeaders } from './ServiceProxy';
 import { ServiceProxyResponseEvent } from './ServiceProxyResponseEvent';
-import { MockConnectivityMonitor } from './ConnectivityMonitor';
 import { MockServiceExecution } from './mock-service-proxy/MockServiceExecution';
 import { MockServiceParameters } from './mock-service-proxy/MockServiceParameters';
 import { GlobalResponseHeaders } from './mock-service-proxy/GlobalResponseHeaders';
@@ -34,10 +33,11 @@ export class MockServiceProxy implements IServiceProxy {
             this.globalHeaders
         );
         this.serviceDefinitions = new MockServiceDefinitions(this.operations);
+        this.execution.setConnectivityStatus(true);
     }
 
-    public listenToConnectivityMonitor(connectivityMonitor: MockConnectivityMonitor) {
-        this.execution.listenToConnectivityMonitor(connectivityMonitor);
+    public setConnectivityStatus(isOnline: boolean) {
+        this.execution.setConnectivityStatus(isOnline);
     }
 
     public createViaService<TData, TReturn>(resourcePath: string, data: TData, options?: IServiceCallOptions): Promise<TReturn> {
