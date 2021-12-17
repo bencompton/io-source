@@ -1,4 +1,4 @@
-﻿import { IServiceProxy } from './ServiceProxy';
+﻿import { IServiceProxy, IServiceCallOptions, IHttpHeaders } from './ServiceProxy';
 import { ServiceProxyResponseEvent } from './ServiceProxyResponseEvent';
 import { MockServiceExecution } from './mock-service-proxy/MockServiceExecution';
 import { MockServiceParameters } from './mock-service-proxy/MockServiceParameters';
@@ -15,6 +15,7 @@ export class MockServiceProxy implements IServiceProxy {
     private execution: MockServiceExecution;
     private globalResponseHeaders: GlobalResponseHeaders;
     private serviceDefinitions: MockServiceDefinitions;
+    private globalHeaders: IHttpHeaders;
 
     constructor(options: IMockServiceProxyOptions) {
         this.options = options;
@@ -22,12 +23,14 @@ export class MockServiceProxy implements IServiceProxy {
         this.serviceProxyResponseEvent = new ServiceProxyResponseEvent();
         this.parameters = new MockServiceParameters();
         this.globalResponseHeaders = new GlobalResponseHeaders();
+        this.globalHeaders = {};
         this.execution = new MockServiceExecution(
             this.options,
             this.operations,
             this.parameters,
             this.globalResponseHeaders,
-            this.serviceProxyResponseEvent
+            this.serviceProxyResponseEvent,
+            this.globalHeaders
         );
         this.serviceDefinitions = new MockServiceDefinitions(this.operations);
         this.execution.setConnectivityStatus(true);
@@ -37,24 +40,24 @@ export class MockServiceProxy implements IServiceProxy {
         this.execution.setConnectivityStatus(isOnline);
     }
 
-    public createViaService<TData, TReturn>(resourcePath: string, data: TData): Promise<TReturn> {
-        return this.execution.fakeAjaxCall<TData, TReturn>('create', resourcePath, data);
+    public createViaService<TData, TReturn>(resourcePath: string, data: TData, options?: IServiceCallOptions): Promise<TReturn> {
+        return this.execution.fakeAjaxCall<TData, TReturn>('create', resourcePath, data, options);
     }
 
-    public readViaService<T>(resourcePath: string): Promise<T> {
-        return this.execution.fakeAjaxCall<void, T>('read', resourcePath, null);
+    public readViaService<T>(resourcePath: string, options?: IServiceCallOptions): Promise<T> {
+        return this.execution.fakeAjaxCall<void, T>('read', resourcePath, null, options);
     }
 
-    public patchViaService<TData, TReturn>(resourcePath: string, data: TData): Promise<TReturn> {
-        return this.execution.fakeAjaxCall<TData, TReturn>('patch', resourcePath, data);
+    public patchViaService<TData, TReturn>(resourcePath: string, data: TData, options?: IServiceCallOptions): Promise<TReturn> {
+        return this.execution.fakeAjaxCall<TData, TReturn>('patch', resourcePath, data, options);
     }
 
-    public updateViaService<TData, TReturn>(resourcePath: string, data: TData): Promise<TReturn> {
-        return this.execution.fakeAjaxCall<TData, TReturn>('update', resourcePath, data);
+    public updateViaService<TData, TReturn>(resourcePath: string, data: TData, options?: IServiceCallOptions): Promise<TReturn> {
+        return this.execution.fakeAjaxCall<TData, TReturn>('update', resourcePath, data, options);
     }
 
-    public deleteViaService<TData, TReturn>(resourcePath: string, data: TData): Promise<TReturn> {
-        return this.execution.fakeAjaxCall<TData, TReturn>('delete', resourcePath, data);
+    public deleteViaService<TData, TReturn>(resourcePath: string, data: TData, options?: IServiceCallOptions): Promise<TReturn> {
+        return this.execution.fakeAjaxCall<TData, TReturn>('delete', resourcePath, data, options);
     }
 
     public addCreateOperation<TRequest, TResponse>(
@@ -90,6 +93,10 @@ export class MockServiceProxy implements IServiceProxy {
         responseFunction?: IServiceResponseFunction<TResponse>
     ) {
         this.serviceDefinitions.addDeleteOperation(url, responseFunction);
+    }
+
+    public addGlobalRequestHeader(headerName: string, headerValue: string) {
+        this.globalHeaders[headerName] = headerValue;
     }
 
     public addGlobalResponseHeader(name: string, value: (() => string) | string) {

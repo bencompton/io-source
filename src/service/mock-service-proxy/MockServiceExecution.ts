@@ -1,4 +1,5 @@
-import { IServiceResponse } from '../ServiceProxy';
+import { IHttpHeaders, IServiceCallOptions, IServiceResponse } from '../ServiceProxy';
+import { IConnectivityMonitor, MockConnectivityMonitor } from '../ConnectivityMonitor';
 import { MockServiceParameters } from './MockServiceParameters';
 import { ServiceOperationTypeEnum, IMockServiceOperation } from './MockServiceOperations';
 import { GlobalResponseHeaders } from './GlobalResponseHeaders';
@@ -12,6 +13,7 @@ export interface ILoggedServiceCall {
     urlMatches: RegExpMatchArray;
     response: IServiceResponse<any>;
     requestBody: any;
+    requestHeaders: IHttpHeaders
 }
 
 export class MockServiceExecution {
@@ -22,13 +24,15 @@ export class MockServiceExecution {
     private operations: MockServiceOperations;
     private requestValidator: MockServiceRequestValidator;
     private serviceProxyResponseEvent: ServiceProxyResponseEvent;
+    private globalHeaders: IHttpHeaders = {};
 
     constructor(
         options: IMockServiceProxyOptions,
         operations: MockServiceOperations,
         parameters: MockServiceParameters,
         globalResponseHeaders: GlobalResponseHeaders,
-        serviceProxyResponseEvent: ServiceProxyResponseEvent
+        serviceProxyResponseEvent: ServiceProxyResponseEvent,
+        globalHeaders: IHttpHeaders
     ) {
         this.options = options;
         this.operations = operations;
@@ -36,17 +40,19 @@ export class MockServiceExecution {
         this.globalResponseHeaders = globalResponseHeaders,
         this.requestValidator = new MockServiceRequestValidator();
         this.serviceProxyResponseEvent = serviceProxyResponseEvent;
+        this.globalHeaders = globalHeaders;
     }
 
     public fakeAjaxCall<TData, TReturn>(
         operationType: ServiceOperationTypeEnum,
         resourcePath: string,
-        data: TData
+        data: TData,
+        options: IServiceCallOptions
     ) {
         const matchingOperations = this.operations.getMatchingOperations<TData, TReturn>(operationType, resourcePath);
         this.requestValidator.validateRequest(operationType, resourcePath, matchingOperations)
 
-        return this.executeServiceOperation(resourcePath, matchingOperations[0], data);
+        return this.executeServiceOperation(resourcePath, matchingOperations[0], data, options);
     }
 
     public setConnectivityStatus(isOnline: boolean) {
@@ -59,7 +65,7 @@ export class MockServiceExecution {
             const randomDelayMilliseconds = this.options.maxRandomDelayMilliseconds || 1500;
 
             timeout = this.options.addRandomDelays ? (Math.random() * randomDelayMilliseconds) : 0;
-            
+
             if (timeout === 0) {
                 resolve();
             } else {
@@ -71,8 +77,14 @@ export class MockServiceExecution {
     private executeServiceOperation<TData, TReturn>(
         resourcePath: string,
         serviceOperation: IMockServiceOperation<TData, TReturn>,
-        requestBody: TData
+        requestBody: TData,
+        options: IServiceCallOptions
     ) {
+        const headersFromOptions = options && options.headers || {};
+        const defaultHeaders: { [header: string]: string } = {};
+        let acceptHeaderOverridden = false;
+        let contentTypeHeaderOverridden = false;
+
         return this.waitForRandomDelay()
             .then(() => {
                 let urlMatches: RegExpMatchArray;
@@ -81,7 +93,7 @@ export class MockServiceExecution {
                 urlMatches = resourcePath.match(serviceOperation.urlRegex);
 
                 try {
-                    response = serviceOperation.response(urlMatches, requestBody, this.parameters.params);
+                    response = serviceOperation.response(urlMatches, requestBody, options, this.parameters.params);
                 } catch (error) {
                     const errorMessage = `An error occurred when executing a ${serviceOperation.operationType} request to ${resourcePath}: ${(error as Error).message}`;
                     console.warn(errorMessage);
@@ -90,17 +102,42 @@ export class MockServiceExecution {
                         status: 500,
                         responseBody: { message: errorMessage }
                     }
-                }                
+                }
+
+                if (options && options.headers) {
+                    Object.keys(options.headers).forEach((header) => {
+                        const lowerCaseHeader = header.toLocaleLowerCase();
+
+                        if (lowerCaseHeader === 'accept') {
+                            acceptHeaderOverridden = true;
+                        }
+
+                        if (lowerCaseHeader === 'content-type') {
+                            contentTypeHeaderOverridden = true;
+                        }
+                    });
+                }
+
+                if (!contentTypeHeaderOverridden) {
+                    defaultHeaders['content-type'] = 'application/json';
+                }
+
+                if (!acceptHeaderOverridden) {
+                    defaultHeaders['accept'] = 'application/json';
+                }
+
+                let requestHeaders: IHttpHeaders = { ...defaultHeaders, ...this.globalHeaders, ...headersFromOptions };
 
                 this.loggedCalls.push({
                     urlMatches,
                     response,
-                    requestBody
+                    requestBody,
+                    requestHeaders
                 });
 
                 this.globalResponseHeaders.addGlobalResponseHeaders(response);
-                
-                this.serviceProxyResponseEvent.fire(response);                 
+
+                this.serviceProxyResponseEvent.fire(response);
 
                 if (response.status >= 400) {
                     throw new ServiceProxyError(resourcePath, response.status, response.responseBody);
@@ -108,5 +145,5 @@ export class MockServiceExecution {
 
                 return <TReturn>response.responseBody;
             });
-    }       
+    }
 }

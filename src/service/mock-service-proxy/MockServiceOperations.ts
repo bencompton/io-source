@@ -1,7 +1,7 @@
-import { IServiceResponse } from '../ServiceProxy';
+import { IServiceCallOptions, IServiceResponse } from '../ServiceProxy';
 
 export interface IMockServiceOperationResponseFunction<TRequest, TResponse> {
-    (urlMatches?: string[], requestBody?: TRequest, params?: any): IServiceResponse<TResponse>;
+    (urlMatches?: string[], requestBody?: TRequest, options?: IServiceCallOptions, params?: any): IServiceResponse<TResponse>;
 }
 
 export interface IMockServiceOperation<TRequest, TResponse> {
