@@ -13,7 +13,7 @@ export interface ILoggedServiceCall {
     urlMatches: RegExpMatchArray;
     response: IServiceResponse<any>;
     requestBody: any;
-    headers: IHttpHeaders
+    requestHeaders: IHttpHeaders
 }
 
 export class MockServiceExecution {
@@ -129,13 +129,13 @@ export class MockServiceExecution {
                     defaultHeaders['accept'] = 'application/json';
                 }
 
-                let headers: IHttpHeaders = { ...defaultHeaders, ...this.globalHeaders, ...headersFromOptions };
+                let requestHeaders: IHttpHeaders = { ...defaultHeaders, ...this.globalHeaders, ...headersFromOptions };
 
                 this.loggedCalls.push({
                     urlMatches,
                     response,
                     requestBody,
-                    headers
+                    requestHeaders
                 });
 
                 this.globalResponseHeaders.addGlobalResponseHeaders(response);
