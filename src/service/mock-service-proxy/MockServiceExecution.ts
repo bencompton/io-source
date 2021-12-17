@@ -1,5 +1,4 @@
 import { IHttpHeaders, IServiceCallOptions, IServiceResponse } from '../ServiceProxy';
-import { IConnectivityMonitor, MockConnectivityMonitor } from '../ConnectivityMonitor';
 import { MockServiceParameters } from './MockServiceParameters';
 import { ServiceOperationTypeEnum, IMockServiceOperation } from './MockServiceOperations';
 import { GlobalResponseHeaders } from './GlobalResponseHeaders';
