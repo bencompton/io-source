@@ -4,6 +4,7 @@ import { IServiceResponse } from '../ServiceProxy';
 export interface IServiceResponseFunctionBaseArgs {
     urlParameters?: string;
     requestBody?: any;
+    options?: any;
     globalServiceParameters?: any;
 }
 
@@ -12,7 +13,7 @@ export interface IServiceResponseFunctionUrlParameter {
 }
 
 export interface IServiceResponseFunction<TResponse> {
-    (urlParameters?: any, requestBody?: any, globalServiceParameters?: any): TResponse | IServiceResponse<TResponse>
+    (urlParameters?: any, requestBody?: any, options?: any, globalServiceParameters?: any): TResponse | IServiceResponse<TResponse>
 }
 
 export class MockServiceDefinitions {
@@ -81,7 +82,7 @@ export class MockServiceDefinitions {
         url: string | RegExp,
         responseFunction?: IServiceResponseFunction<TResponse>
     ): IMockServiceOperationResponseFunction<TRequest, TResponse> {
-        return (urlMatches: RegExpMatchArray, requestBody: TRequest, globalServiceParameters: any): IServiceResponse<TResponse> => {
+        return (urlMatches: RegExpMatchArray, requestBody: TRequest, options: any, globalServiceParameters: any): IServiceResponse<TResponse> => {
             if (!responseFunction) {
                 return {
                     status: 204,
@@ -92,6 +93,7 @@ export class MockServiceDefinitions {
             const response = responseFunction(
                 this.getUrlParams(url, urlMatches),
                 requestBody,
+                options,
                 globalServiceParameters
             );
 
